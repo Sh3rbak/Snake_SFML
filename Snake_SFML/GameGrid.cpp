@@ -14,18 +14,20 @@ namespace SnakeGame
 			gridCell.snake = item;
 		}
 	}
+
 	template<class T>
 	void RemoteItemFromCell(GridCell& gridCell, T& item)
 	{
-		if (T == Apple)
+		if (*T == Apple)
 		{
 			gridCell.apple = nullptr;
 		}
-		else if (T == Snake)
+		else if (*T == Snake)
 		{
 			gridCell.snake = nullptr;
 		}
 	}
+
 	void InitGameGrid(GameGrid& gameGrid)
 	{
 		for (int i = 0; i < GRID_CELLS_HORIZONTAL; ++i)
