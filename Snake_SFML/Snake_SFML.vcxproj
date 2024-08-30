@@ -133,7 +133,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Apple.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameGrid.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameStatePlayingData.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Snake.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Apple.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameGrid.h" />
+    <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="GameStatePlayingData.h" />
+    <ClInclude Include="Math.h" />
+    <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

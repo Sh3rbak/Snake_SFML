@@ -13,7 +13,9 @@ namespace SnakeGame
 	const int SNAKE_SPEED = 150;
 	const float APPLE_SIZE = 20.f;
 
-	const int CELL_SIZE = APPLE_SIZE;
+	const float PAUSE_BETWEEN_LOOP = 1.f;
+
+	const int CELL_SIZE = static_cast<int>(APPLE_SIZE);
 	const unsigned int GRID_CELLS_HORIZONTAL = unsigned(SCREEN_WIDHT / APPLE_SIZE);
 	const unsigned int GRID_CELLS_VERTICAL = unsigned((SCREEN_HEIGHT - FIELD_ON_TOP_SCREEN) / APPLE_SIZE);
 	const int GAME_FIELD_WIDHT = CELL_SIZE * GRID_CELLS_HORIZONTAL;

@@ -2,34 +2,14 @@
 
 namespace SnakeGame
 {
-	template <class T>
-	void AddItemToCell(GridCell& gridCell, T& item)
-	{
-		if (*T == Apple)
-		{
-			gridCell.apple = item;
-		}
-		else if (*T == Snake)
-		{
-			gridCell.snake = item;
-		}
-	}
-
-	template<class T>
-	void RemoteItemFromCell(GridCell& gridCell, T& item)
-	{
-		if (*T == Apple)
-		{
-			gridCell.apple = nullptr;
-		}
-		else if (*T == Snake)
-		{
-			gridCell.snake = nullptr;
-		}
-	}
-
 	void InitGameGrid(GameGrid& gameGrid)
 	{
+		gameGrid.cells.resize(GRID_CELLS_HORIZONTAL);
+		for (auto it = gameGrid.cells.begin(); it != gameGrid.cells.end(); ++it)
+		{
+			std::vector<GridCell>* verticalCells = &*it;
+			verticalCells->resize(GRID_CELLS_VERTICAL);
+		}
 		for (int i = 0; i < GRID_CELLS_HORIZONTAL; ++i)
 		{
 			for (int j = 0; j < GRID_CELLS_VERTICAL; ++j)
@@ -45,5 +25,12 @@ namespace SnakeGame
 	void ClearGameGrid(GameGrid& gameGrid)
 	{
 		gameGrid.cells.clear();
+	}
+
+	GridCell GetRandomCell(GameGrid& gameGrid)
+	{
+		int randomCellX = rand() % GRID_CELLS_HORIZONTAL;
+		int randomCellY = rand() % GRID_CELLS_VERTICAL;
+		return gameGrid.cells[randomCellX][randomCellY];
 	}
 }
