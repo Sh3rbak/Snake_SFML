@@ -2,6 +2,29 @@
 
 namespace SnakeGame
 {
+	void ChangeTypeCell(GridCell& gridCell, GameItemType itemType)
+	{
+		if (gridCell.type != GameItemType::None)
+		{
+			return;
+		}
+		gridCell.type = itemType;
+	}
+
+	void ClearTypeCell(GridCell& gridCell)
+	{
+		gridCell.type = GameItemType::None;
+	}
+
+	bool IsAnythingInCell(GridCell& cell)
+	{
+		if (cell.type != GameItemType::None)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	void InitGameGrid(GameGrid& gameGrid)
 	{
 		gameGrid.cells.resize(GRID_CELLS_HORIZONTAL);
@@ -27,10 +50,10 @@ namespace SnakeGame
 		gameGrid.cells.clear();
 	}
 
-	GridCell GetRandomCell(GameGrid& gameGrid)
+	GridCell* GetRandomCell(GameGrid& gameGrid)
 	{
 		int randomCellX = rand() % GRID_CELLS_HORIZONTAL;
 		int randomCellY = rand() % GRID_CELLS_VERTICAL;
-		return gameGrid.cells[randomCellX][randomCellY];
+		return &gameGrid.cells[randomCellX][randomCellY];
 	}
 }

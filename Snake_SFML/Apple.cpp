@@ -6,11 +6,15 @@ namespace SnakeGame
 	{
 		apple.shape.setRadius(APPLE_SIZE);
 		apple.shape.setFillColor(sf::Color::Red);
-		apple.shape.setOrigin({ APPLE_SIZE / 2.f, APPLE_SIZE / 2.f });
+		apple.shape.setOrigin({ APPLE_SIZE, APPLE_SIZE});
 	}
 	void ResetAppleState(Apple& apple)
 	{
 		apple.isEaten = false;
+	}
+	void SetApplePosition(Apple& apple, Position position)
+	{
+		apple.position = position;
 	}
 	void MarkAppleAsEaten(Apple& apple)
 	{
@@ -18,7 +22,7 @@ namespace SnakeGame
 	}
 	void DrawApple(Apple& apple, sf::RenderWindow& window)
 	{
-		if (!apple.isEaten)
+		if (apple.isEaten)
 		{
 			return;
 		}

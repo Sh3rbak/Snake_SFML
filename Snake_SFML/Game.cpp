@@ -33,7 +33,7 @@ namespace SnakeGame
 		{
 			while (game.gameStateStack.size() > 0)
 			{
-				/*ShutdownGameState(game, game.gameStateStack.back());*/
+				ShutdownGameState(game, game.gameStateStack.back());
 				game.gameStateStack.pop_back();
 			}
 		}
@@ -41,7 +41,7 @@ namespace SnakeGame
 		{
 			if (game.gameStateStack.size() > 0)
 			{
-				/*ShutdownGameState(game, game.gameStateStack.back());*/
+				ShutdownGameState(game, game.gameStateStack.back());
 				game.gameStateStack.pop_back();
 			}
 		}
@@ -84,7 +84,7 @@ namespace SnakeGame
 		}
 	}
 
-	/*void ShutdownGame(Game& game)
+	void ShutdownGame(Game& game)
 	{
 		while (game.gameStateStack.size() > 0)
 		{
@@ -95,7 +95,7 @@ namespace SnakeGame
 		game.gameStateChangeType = GameStateChangeType::None;
 		game.pendingGameStateType = GameStateType::None;
 		game.pendingGameStateIsExclusivelyVisible = false;
-	}*/
+	}
 
 	void PushGameState(Game& game, GameStateType stateType, bool isExclusivelyVisible)
 	{
@@ -136,6 +136,26 @@ namespace SnakeGame
 			break;
 		default:
 			assert(false);
+			break;
+		}
+	}
+
+	void ShutdownGameState(Game& game, GameState& state)
+	{
+		switch (state.type)
+		{
+		case SnakeGame::GameStateType::MainMenu:
+			break;
+		case SnakeGame::GameStateType::Playing:
+			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game);
+			break;
+		case SnakeGame::GameStateType::LeaderBoard:
+			break;
+		case SnakeGame::GameStateType::GameOver:
+			break;
+		case SnakeGame::GameStateType::ExitDialog:
+			break;
+		default:
 			break;
 		}
 	}

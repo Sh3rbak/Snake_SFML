@@ -5,18 +5,17 @@
 
 namespace SnakeGame
 {
-	struct GridCell;
-
 	struct Apple
 	{
+		PositionInGrid positionInGrid;
 		Position position;
 		sf::CircleShape shape;
 		bool isEaten = false;
-		GridCell* cell = nullptr;
 	};
 
 	void InitApple(Apple& apple);
 	void ResetAppleState(Apple& apple);
+	void SetApplePosition(Apple& apple, Position position);
 	void MarkAppleAsEaten(Apple& apple);
 	void DrawApple(Apple& apple, sf::RenderWindow& window);
 }

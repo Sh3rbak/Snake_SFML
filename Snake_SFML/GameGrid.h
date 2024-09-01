@@ -6,36 +6,32 @@
 
 namespace SnakeGame
 {
+	enum class GameItemType
+	{
+		None,
+		Apple,
+		Snake
+	};
+
+	struct Apple;
 	struct Snake;
 	struct GridCell
 	{
 		Position position;
-		void* item = nullptr;
+		GameItemType type = GameItemType::None;
 	};
 
-	template <class T>
-	void AddItemToCell(GridCell& gridCell, T& item)
-	{
-		if (gridCell.item != nullptr)
-		{
-			return;
-		}
-		gridCell.item = &item;
-	}
-	template <class T>
-	void RemoteItemFromCell(GridCell& gridCell, T& item)
-	{
-		gridCell.item = nullptr;
-	}
+	void ChangeTypeCell(GridCell& gridCell, GameItemType itemType);
+	void ClearTypeCell(GridCell& gridCell);
+	bool IsAnythingInCell(GridCell& cell);
 
 	struct GameGrid
 	{
 		std::vector<std::vector<GridCell>> cells;
-		/*std::unordered_map<int, std::unordered_map<int, GridCell>> cells;*/
 	};
 
 	void InitGameGrid(GameGrid& gameGrid);
 	void ClearGameGrid(GameGrid& gameGrid);
-	GridCell GetRandomCell(GameGrid& gameGrid);
+	GridCell* GetRandomCell(GameGrid& gameGrid);
 }
 

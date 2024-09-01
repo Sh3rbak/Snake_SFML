@@ -11,7 +11,7 @@ int main()
 	srand(seed);
 
 	sf::RenderWindow window(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "SNAKE");
-
+	
 	std::shared_ptr<Game> game = std::make_shared<Game>();
 	InitGame(*game);
 
@@ -43,5 +43,6 @@ int main()
 		}
 
 	}
+	
 	return 0;
 }
