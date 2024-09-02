@@ -22,7 +22,7 @@ namespace SnakeGame
 	void ShutdownGameStatePlaying(GameStatePlayingData& data, Game& game)
 	{
 		ClearGameGrid(data.gameGrid);
-		ClearCnake(data.snake);
+		ClearSnake(data.snake);
 	}
 
 	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event)
@@ -38,33 +38,23 @@ namespace SnakeGame
 
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime)
 	{
-		if (!data.isBlockedChangeOfDirection)
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
-				data.snake.head->direction != SnakeDirection::Down)
-			{
-				data.snake.head->direction = SnakeDirection::Up;
-				data.isBlockedChangeOfDirection = true;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) &&
-				data.snake.head->direction != SnakeDirection::Left)
-			{
-				data.snake.head->direction = SnakeDirection::Right;
-				data.isBlockedChangeOfDirection = true;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
-				data.snake.head->direction != SnakeDirection::Up)
-			{
-				data.snake.head->direction = SnakeDirection::Down;
-				data.isBlockedChangeOfDirection = true;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) &&
-				data.snake.head->direction != SnakeDirection::Right)
-			{
-				data.snake.head->direction = SnakeDirection::Left;
-				data.isBlockedChangeOfDirection = true;
-			}
+			data.newDirection = SnakeDirection::Up;
 		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			data.newDirection = SnakeDirection::Right;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			data.newDirection = SnakeDirection::Down;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			data.newDirection = SnakeDirection::Left;
+		}
+		
 
 		data.timeBetweenLoop += deltaTime;
 		if(data.timeBetweenLoop < PAUSE_BETWEEN_LOOP)
@@ -72,12 +62,13 @@ namespace SnakeGame
 			return;
 		}
 		data.timeBetweenLoop = 0;
-		data.isBlockedChangeOfDirection = false;
+		
+		SetSnakeHeadDirection(data.snake, data.newDirection);
 
-		PositionInGrid currectPositionInGrid = data.snake.head->positionInGrid;
+		PositionInGrid currectPositionInGrid = GetSnakeHeadPositionInGrid(data.snake);
 		GridCell* currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
-		switch (data.snake.head->direction)
+		switch (GetSnakeHeadDirection(data.snake))
 		{
 		case SnakeDirection::Left:
 		{

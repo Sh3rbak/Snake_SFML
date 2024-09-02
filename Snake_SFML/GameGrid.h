@@ -13,8 +13,6 @@ namespace SnakeGame
 		Snake
 	};
 
-	struct Apple;
-	struct Snake;
 	struct GridCell
 	{
 		Position position;

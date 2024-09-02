@@ -3,6 +3,7 @@
 #include "Apple.h"
 #include "Snake.h"
 #include "GameGrid.h"
+#include <list>
 
 namespace SnakeGame
 {
@@ -15,7 +16,7 @@ namespace SnakeGame
 		GameGrid gameGrid;
 		int numEatenApples = 0;
 		float timeBetweenLoop = 0;
-		bool isBlockedChangeOfDirection = false;
+		SnakeDirection newDirection;
 	};
 
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game);

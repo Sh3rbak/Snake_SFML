@@ -4,11 +4,14 @@ namespace SnakeGame
 {
 	void InitSnakeHead(Snake& snake)
 	{
-		auto head = std::make_shared<PartOfBody>();
-		snake.head = head;
-		snake.head->shape.setSize({ SNAKE_SIZE, SNAKE_SIZE });
-		snake.head->shape.setFillColor(sf::Color::Green);
-		snake.head->shape.setOrigin({ SNAKE_SIZE / 2.f, SNAKE_SIZE / 2.f });
+		if(snake.body.size() > 0)
+		{
+			return;
+		}
+		snake.body.push_back(new PartOfBody);
+		snake.body.back()->shape.setSize({ SNAKE_SIZE, SNAKE_SIZE });
+		snake.body.back()->shape.setFillColor(sf::Color::Green);
+		snake.body.back()->shape.setOrigin({ SNAKE_SIZE / 2.f, SNAKE_SIZE / 2.f });
 	}
 
 	void InitSnakePartOfBody(PartOfBody& partOfBody)
@@ -20,73 +23,80 @@ namespace SnakeGame
 
 	void PushPartOfBody(Snake& snake)
 	{
-		auto newPartOfBody = std::make_shared<PartOfBody>();
-		InitSnakePartOfBody(*newPartOfBody);
-		std::shared_ptr<PartOfBody> partOfBoby = snake.head;
-		while (partOfBoby->nextPartOfBody)
+		if (snake.body.size() < 1)
 		{
-			partOfBoby = partOfBoby->nextPartOfBody;
+			return;
 		}
-		newPartOfBody->previousPartOfBody = partOfBoby;
-		partOfBoby->nextPartOfBody = newPartOfBody;
+		snake.body.push_back(new PartOfBody);
+
+		InitSnakePartOfBody(*snake.body.back());
 	}
 
-	void ClearCnake(Snake& snake)
+	void ClearSnake(Snake& snake)
 	{
-		std::shared_ptr<PartOfBody> partOfBoby = snake.head;
-		std::shared_ptr<PartOfBody> oldPartOfBody;
-		while (partOfBoby->nextPartOfBody)
+		for (auto it : snake.body)
 		{
-			partOfBoby->previousPartOfBody.reset();
-			oldPartOfBody = partOfBoby;
-			partOfBoby = partOfBoby->nextPartOfBody;
-			oldPartOfBody->nextPartOfBody.reset();
+			delete it;
 		}
-		snake.head.reset();
 	}
 
 	void UpdateSnakeBody(Snake& snake)
 	{
-		std::shared_ptr<PartOfBody> partOfBoby = snake.head;
-		while (partOfBoby->nextPartOfBody)
+		if (snake.body.size() < 2)
 		{
-			partOfBoby = partOfBoby->nextPartOfBody;
+			return;
 		}
-		while (partOfBoby->previousPartOfBody.lock())
+		PartOfBody* oldPartOfBody = snake.body.back();
+		for (auto it = snake.body.rbegin(); it != snake.body.rend(); ++it)
 		{
-			partOfBoby->position = partOfBoby->previousPartOfBody.lock()->position;
-			partOfBoby->positionInGrid = partOfBoby->previousPartOfBody.lock()->positionInGrid;
-			partOfBoby->direction = partOfBoby->previousPartOfBody.lock()->direction;
-			partOfBoby = partOfBoby->previousPartOfBody.lock();
+			oldPartOfBody->position = (*it)->position;
+			oldPartOfBody->positionInGrid = (*it)->positionInGrid;
+			oldPartOfBody->direction = (*it)->direction;
+			oldPartOfBody = *it;
 		}
+	}
+
+	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction)
+	{
+		if ((static_cast<int>(snake.body.front()->direction) % 2) == (static_cast<int>(direction) % 2))
+		{
+			return;
+		}
+		snake.body.front()->direction = direction;
 	}
 
 	void SetSnakeHeadPosition(Snake& snake, Position position, PositionInGrid positionInGrid)
 	{
-		snake.head->position = position;
-		snake.head->positionInGrid = positionInGrid;
+		snake.body.front()->position = position;
+		snake.body.front()->positionInGrid = positionInGrid;
+	}
+
+	PositionInGrid GetSnakeHeadPositionInGrid(Snake& snake)
+	{
+		return snake.body.front()->positionInGrid;
+	}
+
+	SnakeDirection GetSnakeHeadDirection(Snake& snake)
+	{
+		return snake.body.front()->direction;
 	}
 
 	std::vector<PositionInGrid> GetPositionSnake(Snake& snake)
 	{
 		std::vector<PositionInGrid> snakeInGrid;
-		std::shared_ptr<PartOfBody> partOfBody = snake.head;
-		while (partOfBody)
+		for (auto it : snake.body)
 		{
-			snakeInGrid.push_back(partOfBody->positionInGrid);
-			partOfBody = partOfBody->nextPartOfBody;
+			snakeInGrid.push_back(it->positionInGrid);
 		}
 		return snakeInGrid;
 	}
 
 	void DrawSnake(Snake& snake, sf::RenderWindow& window)
 	{
-		std::shared_ptr<PartOfBody> partOfBoby = snake.head;
-		while (partOfBoby)
+		for (auto it : snake.body)
 		{
-			partOfBoby->shape.setPosition(partOfBoby->position);
-			window.draw(partOfBoby->shape);
-			partOfBoby = partOfBoby->nextPartOfBody;
+			it->shape.setPosition(it->position);
+			window.draw(it->shape);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "GameSettings.h"
 #include "Math.h"
+#include <list>
 
 namespace SnakeGame
 {
@@ -19,23 +20,24 @@ namespace SnakeGame
 		PositionInGrid positionInGrid;
 		sf::RectangleShape shape;
 		SnakeDirection direction = SnakeDirection::Left;
-		std::shared_ptr<PartOfBody> nextPartOfBody;
-		std::weak_ptr<PartOfBody> previousPartOfBody;
 
-		PartOfBody() : position({0,0}), positionInGrid({0,0}){}
+		PartOfBody() : position({ 0,0 }), positionInGrid({ 0,0 }) {}
 	};
 
 	struct Snake
 	{
-		std::shared_ptr<PartOfBody> head = nullptr;
+		std::list<PartOfBody*> body;
 	};
 
 	void InitSnakeHead(Snake& snake);
 	void InitSnakePartOfBody(PartOfBody& partOfBody);
 	void PushPartOfBody(Snake& snake);
-	void ClearCnake(Snake& snake);
-	void UpdateSnakeBody(Snake& snakeBody);
+	void ClearSnake(Snake& snake);
+	void UpdateSnakeBody(Snake& snake);
+	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction);
 	void SetSnakeHeadPosition(Snake& snake, Position position, PositionInGrid positionInGrid);
+	PositionInGrid GetSnakeHeadPositionInGrid(Snake& snake);
+	SnakeDirection GetSnakeHeadDirection(Snake& snake);
 	std::vector<PositionInGrid> GetPositionSnake(Snake& snake);
 	void DrawSnake(Snake& snake, sf::RenderWindow& window);
 }
