@@ -2,34 +2,33 @@
 
 namespace SnakeGame
 {
-	void InitSnakeHead(Snake& snake)
+	void InitSnakeHead(Snake& snake, sf::Texture& textureOfHead)
 	{
 		if(snake.body.size() > 0)
 		{
 			return;
 		}
 		snake.body.push_back(new PartOfBody);
-		snake.body.back()->shape.setSize({ SNAKE_SIZE, SNAKE_SIZE });
-		snake.body.back()->shape.setFillColor(sf::Color::Green);
-		snake.body.back()->shape.setOrigin({ SNAKE_SIZE / 2.f, SNAKE_SIZE / 2.f });
+		snake.body.back()->sprite.setTexture(textureOfHead);
+		snake.body.back()->sprite.setOrigin(GetItemOrigin(snake.body.back()->sprite, { 0.5f, 0.5f }));
+		snake.body.back()->sprite.setScale(GetSpriteScale(snake.body.back()->sprite, { SNAKE_SIZE, SNAKE_SIZE }));
 	}
 
-	void InitSnakePartOfBody(PartOfBody& partOfBody)
+	void InitSnakePartOfBody(PartOfBody& partOfBody, sf::Texture& textureOfBody)
 	{
-		partOfBody.shape.setSize({ SNAKE_SIZE, SNAKE_SIZE });
-		partOfBody.shape.setFillColor(sf::Color::Green);
-		partOfBody.shape.setOrigin({ SNAKE_SIZE / 2.f, SNAKE_SIZE / 2.f });
+		partOfBody.sprite.setTexture(textureOfBody);
+		partOfBody.sprite.setOrigin(GetItemOrigin(partOfBody.sprite, { 0.5f, 0.5f }));
+		partOfBody.sprite.setScale(GetSpriteScale(partOfBody.sprite, { SNAKE_SIZE, SNAKE_SIZE }));
 	}
 
-	void PushPartOfBody(Snake& snake)
+	void PushPartOfBody(Snake& snake, sf::Texture& textureOfBody)
 	{
 		if (snake.body.size() < 1)
 		{
 			return;
 		}
 		snake.body.push_back(new PartOfBody);
-
-		InitSnakePartOfBody(*snake.body.back());
+		InitSnakePartOfBody(*snake.body.back(), textureOfBody);
 	}
 
 	void ClearSnake(Snake& snake)
@@ -46,6 +45,7 @@ namespace SnakeGame
 		{
 			return;
 		}
+		// each part takes the parameters of the previous one
 		PartOfBody* oldPartOfBody = snake.body.back();
 		for (auto it = snake.body.rbegin(); it != snake.body.rend(); ++it)
 		{
@@ -58,6 +58,7 @@ namespace SnakeGame
 
 	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction)
 	{
+		//the head should't move in the opposite direction at once
 		if ((static_cast<int>(snake.body.front()->direction) % 2) == (static_cast<int>(direction) % 2))
 		{
 			return;
@@ -95,8 +96,38 @@ namespace SnakeGame
 	{
 		for (auto it : snake.body)
 		{
-			it->shape.setPosition(it->position);
-			window.draw(it->shape);
+			const sf::Vector2f spriteScale = (GetSpriteScale(it->sprite, { SNAKE_SIZE, SNAKE_SIZE }));
+
+			switch (it->direction)
+			{
+			case SnakeDirection::Up:
+			{
+				it->sprite.setScale(spriteScale.x, spriteScale.y);
+				it->sprite.setRotation(-90.f);
+				break;
+			}
+			case SnakeDirection::Right:
+			{
+				it->sprite.setScale(spriteScale.x, spriteScale.y);
+				it->sprite.setRotation(0.f);
+				break;
+			}
+			case SnakeDirection::Down:
+			{
+				it->sprite.setScale(spriteScale.x, spriteScale.y);
+				it->sprite.setRotation(90.f);
+				break;
+			}
+			case SnakeDirection::Left:
+			{
+				it->sprite.setScale(-spriteScale.x, spriteScale.y);
+				it->sprite.setRotation(0.f);
+				break;
+			}
+			}
+
+			it->sprite.setPosition(it->position);
+			window.draw(it->sprite);
 		}
 	}
 }

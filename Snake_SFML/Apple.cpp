@@ -8,18 +8,22 @@ namespace SnakeGame
 		apple.shape.setFillColor(sf::Color::Red);
 		apple.shape.setOrigin({ APPLE_SIZE, APPLE_SIZE});
 	}
+
 	void ResetAppleState(Apple& apple)
 	{
 		apple.isEaten = false;
 	}
+
 	void SetApplePosition(Apple& apple, Position position)
 	{
 		apple.position = position;
 	}
+
 	void MarkAppleAsEaten(Apple& apple)
 	{
 		apple.isEaten = true;
 	}
+
 	void DrawApple(Apple& apple, sf::RenderWindow& window)
 	{
 		if (apple.isEaten)

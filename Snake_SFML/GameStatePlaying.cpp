@@ -1,13 +1,22 @@
-#include "GameStatePlayingData.h"
+#include "GameStatePlaying.h"
+#include <cassert>
 #include "Game.h"
 
 namespace SnakeGame
 {
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game)
 	{
+		assert(data.headSnakeTexture.loadFromFile(RESOURCES_PATH + "Textures/SnakeHead.png"));
+		assert(data.bodySnakeTexture.loadFromFile(RESOURCES_PATH + "Textures/SnakeBody.png"));
+
+		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
+		InitUI(data.ui, data.font);
+
 		InitGameGrid(data.gameGrid);
-		InitSnakeHead(data.snake);
+		InitSnakeHead(data.snake, data.headSnakeTexture);
 		InitApple(data.apple);
+
+		data.numEatenApples = 0;
 
 		PositionInGrid positionCenterGrid = { GRID_CELLS_HORIZONTAL / 2, GRID_CELLS_VERTICAL / 2 };
 		GridCell* centerGrid = &data.gameGrid.cells[positionCenterGrid.x][positionCenterGrid.y];
@@ -25,13 +34,22 @@ namespace SnakeGame
 		ClearSnake(data.snake);
 	}
 
-	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event)
+	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event, sf::Vector2i mousePosition)
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				PushGameState(game, GameStateType::ExitDialog, false);
+			}
+		}
+		sf::FloatRect pauseRect = GetGlobalBoundsOfPauseButton(data.ui);
+		if (mousePosition.x > pauseRect.left && mousePosition.x < pauseRect.left + pauseRect.width &&
+			mousePosition.y > pauseRect.top && mousePosition.y < pauseRect.top + pauseRect.height)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				SwitchGameState(game, GameStateType::Playing);
 			}
 		}
 	}
@@ -55,7 +73,7 @@ namespace SnakeGame
 			data.newDirection = SnakeDirection::Left;
 		}
 		
-
+		// delay between movement
 		data.timeBetweenLoop += deltaTime;
 		if(data.timeBetweenLoop < PAUSE_BETWEEN_LOOP)
 		{
@@ -65,6 +83,7 @@ namespace SnakeGame
 		
 		SetSnakeHeadDirection(data.snake, data.newDirection);
 
+		//calculate the next cell
 		PositionInGrid currectPositionInGrid = GetSnakeHeadPositionInGrid(data.snake);
 		GridCell* currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
@@ -92,6 +111,7 @@ namespace SnakeGame
 		}
 		}
 
+		//checking collision with board
 		if (currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
 			currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL)
 		{
@@ -108,9 +128,26 @@ namespace SnakeGame
 			{
 				ClearTypeCell(*currectCell);
 				auto randomCell = GetRandomCell(data.gameGrid);
+				int score = 0;
+				// find free cells
+				while (IsAnythingInCell(*randomCell))
+				{
+					randomCell = GetRandomCell(data.gameGrid);
+					++score;
+					if (score > 10)
+					{
+						randomCell = FindEmptyCell(data.gameGrid);
+					}
+				}
+				//if run out of free cells
+				if (randomCell == nullptr)
+				{
+					SwitchGameState(game, GameStateType::Playing);
+				}
 				SetApplePosition(data.apple, randomCell->position);
 				ChangeTypeCell(*randomCell, GameItemType::Apple);
-				PushPartOfBody(data.snake);
+				PushPartOfBody(data.snake, data.bodySnakeTexture);
+				++data.numEatenApples;
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -121,26 +158,29 @@ namespace SnakeGame
 			}
 		}
 
+		//clearing type of cells
 		std::vector<PositionInGrid> positionSnakeInGrid = GetPositionSnake(data.snake);
 		for (auto it = positionSnakeInGrid.begin(); it != positionSnakeInGrid.end(); ++it)
 		{
 			ClearTypeCell(data.gameGrid.cells[it->x][it->y]);
 		}
+
 		UpdateSnakeBody(data.snake);
 		SetSnakeHeadPosition(data.snake, currectCell->position , { currectPositionInGrid.x, currectPositionInGrid.y });
+		
+		//filling in type of cells with Snake
 		positionSnakeInGrid = GetPositionSnake(data.snake);
 		for (auto it = positionSnakeInGrid.begin(); it != positionSnakeInGrid.end(); ++it)
 		{
 			ChangeTypeCell(data.gameGrid.cells[it->x][it->y], GameItemType::Snake);
-		}
-		
-		ChangeTypeCell(*currectCell, GameItemType::Snake);
-				
+		}	
+		UpdateUI(data.ui, data.numEatenApples);
 	}
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, Game& game, sf::RenderWindow& window)
 	{
 		DrawSnake(data.snake, window);
 		DrawApple(data.apple, window);
+		DrawUI(data.ui, window);
 	}
 }

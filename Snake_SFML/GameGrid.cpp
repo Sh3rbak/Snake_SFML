@@ -56,4 +56,19 @@ namespace SnakeGame
 		int randomCellY = rand() % GRID_CELLS_VERTICAL;
 		return &gameGrid.cells[randomCellX][randomCellY];
 	}
+
+	GridCell* FindEmptyCell(GameGrid& gameGrid)
+	{
+		for (auto i = gameGrid.cells.begin(); i != gameGrid.cells.end(); ++i)
+		{
+			for (auto j = i->begin(); j != i->end(); ++j)
+			{
+				if (j->type == GameItemType::None)
+				{
+					return &(*j);
+				}
+			}
+		}
+		return nullptr;
+	}
 }

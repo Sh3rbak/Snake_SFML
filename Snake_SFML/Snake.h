@@ -18,7 +18,7 @@ namespace SnakeGame
 	{
 		Position position;
 		PositionInGrid positionInGrid;
-		sf::RectangleShape shape;
+		sf::Sprite sprite;
 		SnakeDirection direction = SnakeDirection::Left;
 
 		PartOfBody() : position({ 0,0 }), positionInGrid({ 0,0 }) {}
@@ -29,9 +29,9 @@ namespace SnakeGame
 		std::list<PartOfBody*> body;
 	};
 
-	void InitSnakeHead(Snake& snake);
-	void InitSnakePartOfBody(PartOfBody& partOfBody);
-	void PushPartOfBody(Snake& snake);
+	void InitSnakeHead(Snake& snake, sf::Texture& textureOfHead);
+	void InitSnakePartOfBody(PartOfBody& partOfBody, sf::Texture& textureOfBody);
+	void PushPartOfBody(Snake& snake, sf::Texture& textureOfBody);
 	void ClearSnake(Snake& snake);
 	void UpdateSnakeBody(Snake& snake);
 	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction);

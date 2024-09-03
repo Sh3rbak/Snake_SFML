@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "GameStatePlayingData.h"
+#include "GameStatePlaying.h"
 #include <cassert>
 
 namespace SnakeGame
@@ -11,8 +11,10 @@ namespace SnakeGame
 		game.pendingGameStateIsExclusivelyVisible = false;
 		SwitchGameState(game, GameStateType::Playing);
 	}
+
 	void HandleWindowEvents(Game& game, sf::RenderWindow& window)
 	{
+		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -23,10 +25,11 @@ namespace SnakeGame
 
 			if (game.gameStateStack.size() > 0)
 			{
-				HandleWindowEventGameState(game, game.gameStateStack.back(), event);
+				HandleWindowEventGameState(game, game.gameStateStack.back(), event, mousePosition);
 			}
 		}
 	}
+
 	bool UpdateGame(Game& game, float deltaTime)
 	{
 		if (game.gameStateChangeType == GameStateChangeType::Switch)
@@ -64,6 +67,7 @@ namespace SnakeGame
 
 		return false;
 	}
+
 	void DrawGame(Game& game, sf::RenderWindow& window)
 	{
 		if (game.gameStateStack.size() > 0)
@@ -132,6 +136,8 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			break;
+		case SnakeGame::GameStateType::Win:
+			break;
 		case SnakeGame::GameStateType::ExitDialog:
 			break;
 		default:
@@ -153,25 +159,7 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
-			break;
-		default:
-			break;
-		}
-	}
-
-	void HandleWindowEventGameState(Game& game, GameState& state, sf::Event& event)
-	{
-		switch (state.type)
-		{
-		case SnakeGame::GameStateType::MainMenu:
-			break;
-		case SnakeGame::GameStateType::Playing:
-			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event);
-			break;
-		case SnakeGame::GameStateType::LeaderBoard:
-			break;
-		case SnakeGame::GameStateType::GameOver:
+		case SnakeGame::GameStateType::Win:
 			break;
 		case SnakeGame::GameStateType::ExitDialog:
 			break;
@@ -180,6 +168,30 @@ namespace SnakeGame
 			break;
 		}
 	}
+
+	void HandleWindowEventGameState(Game& game, GameState& state, sf::Event& event, sf::Vector2i mousePosition)
+	{
+		switch (state.type)
+		{
+		case SnakeGame::GameStateType::MainMenu:
+			break;
+		case SnakeGame::GameStateType::Playing:
+			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event, mousePosition);
+			break;
+		case SnakeGame::GameStateType::LeaderBoard:
+			break;
+		case SnakeGame::GameStateType::GameOver:
+			break;
+		case SnakeGame::GameStateType::Win:
+			break;
+		case SnakeGame::GameStateType::ExitDialog:
+			break;
+		default:
+			assert(false);
+			break;
+		}
+	}
+
 	void UpdateGameState(Game& game, GameState& state, float deltaTime)
 	{
 		switch (state.type)
@@ -193,6 +205,8 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			break;
+		case SnakeGame::GameStateType::Win:
+			break;
 		case SnakeGame::GameStateType::ExitDialog:
 			break;
 		default:
@@ -200,6 +214,7 @@ namespace SnakeGame
 			break;
 		}
 	}
+
 	void DrawGameState(Game& game, GameState& state, sf::RenderWindow& window)
 	{
 		switch (state.type)
@@ -213,9 +228,12 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			break;
+		case SnakeGame::GameStateType::Win:
+			break;
 		case SnakeGame::GameStateType::ExitDialog:
 			break;
 		default:
+			assert(false);
 			break;
 		}
 	}

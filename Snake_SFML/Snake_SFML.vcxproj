@@ -137,18 +137,22 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrid.cpp" />
     <ClCompile Include="GameMain.cpp" />
-    <ClCompile Include="GameStatePlayingData.cpp" />
+    <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apple.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGrid.h" />
     <ClInclude Include="GameSettings.h" />
-    <ClInclude Include="GameStatePlayingData.h" />
+    <ClInclude Include="GameStatePlaying.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Snake.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

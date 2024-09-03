@@ -11,6 +11,7 @@ namespace SnakeGame
 		Playing,
 		LeaderBoard,
 		GameOver,
+		Win,
 		ExitDialog
 	};
 
@@ -49,7 +50,7 @@ namespace SnakeGame
 
 	void InitGameState(Game& game, GameState& state);
 	void ShutdownGameState(Game& game, GameState& state);
-	void HandleWindowEventGameState(Game& game, GameState& state, sf::Event& event);
+	void HandleWindowEventGameState(Game& game, GameState& state, sf::Event& event, sf::Vector2i mousePosition);
 	void UpdateGameState(Game& game, GameState& state, float deltaTime);
 	void DrawGameState(Game& game, GameState& state, sf::RenderWindow& window);
 }
