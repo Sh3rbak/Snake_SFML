@@ -28,7 +28,7 @@ namespace SnakeGame
 		ChangeTypeCell(*randomCell, GameItemType::Apple);
 	}
 
-	void ShutdownGameStatePlaying(GameStatePlayingData& data, Game& game)
+	void ShutdownGameStatePlaying(GameStatePlayingData& data)
 	{
 		ClearGameGrid(data.gameGrid);
 		ClearSnake(data.snake);
@@ -40,16 +40,14 @@ namespace SnakeGame
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				PushGameState(game, GameStateType::ExitDialog, false);
+				PushGameState(game, GameStateType::Pause, false);
 			}
 		}
-		sf::FloatRect pauseRect = GetGlobalBoundsOfPauseButton(data.ui);
-		if (mousePosition.x > pauseRect.left && mousePosition.x < pauseRect.left + pauseRect.width &&
-			mousePosition.y > pauseRect.top && mousePosition.y < pauseRect.top + pauseRect.height)
+		if (IsMouseOnText(mousePosition, data.ui.pauseText))
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				SwitchGameState(game, GameStateType::Playing);
+				PushGameState(game, GameStateType::Pause, false);
 			}
 		}
 	}
@@ -115,7 +113,7 @@ namespace SnakeGame
 		if (currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
 			currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL)
 		{
-			SwitchGameState(game, GameStateType::Playing);
+			SwitchGameState(game, GameStateType::GameOver);
 			return;
 		}
 
@@ -132,17 +130,17 @@ namespace SnakeGame
 				// find free cells
 				while (IsAnythingInCell(*randomCell))
 				{
-					randomCell = GetRandomCell(data.gameGrid);
-					++score;
 					if (score > 10)
 					{
 						randomCell = FindEmptyCell(data.gameGrid);
 					}
+					randomCell = GetRandomCell(data.gameGrid);
+					++score;
 				}
 				//if run out of free cells
 				if (randomCell == nullptr)
 				{
-					SwitchGameState(game, GameStateType::Playing);
+					SwitchGameState(game, GameStateType::GameOver);
 				}
 				SetApplePosition(data.apple, randomCell->position);
 				ChangeTypeCell(*randomCell, GameItemType::Apple);
@@ -152,7 +150,7 @@ namespace SnakeGame
 			}
 			case SnakeGame::GameItemType::Snake:
 			{
-				SwitchGameState(game, GameStateType::Playing);
+				SwitchGameState(game, GameStateType::GameOver);
 				break;
 			}
 			}

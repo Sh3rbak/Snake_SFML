@@ -27,5 +27,6 @@ namespace SnakeGame
 	void DrawItemsList(sf::RenderWindow& window, const std::vector<sf::Text*>& items, float spacing, Orientation orientation, Alignment alignment, const sf::Vector2f& position, const sf::Vector2f& origin);
 
 	bool IsPointInRect(sf::Vector2f point, sf::Vector2f rectTL, sf::Vector2f rectBR);
+	bool IsMouseOnText(const sf::Vector2i mousePosition, sf::Text& text);
 }
 

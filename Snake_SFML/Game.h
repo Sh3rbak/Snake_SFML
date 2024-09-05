@@ -12,7 +12,7 @@ namespace SnakeGame
 		LeaderBoard,
 		GameOver,
 		Win,
-		ExitDialog
+		Pause
 	};
 
 	struct GameState

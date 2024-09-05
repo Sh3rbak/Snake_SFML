@@ -29,7 +29,7 @@ namespace SnakeGame
 		return ui.pauseText.getGlobalBounds();
 	}
 
-	void UpdateUI(UI& ui, unsigned int score)
+	void UpdateUI(UI& ui, const int score)
 	{
 		ui.scoreText.setString(std::to_string(score));
 	}

@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "GameStatePlaying.h"
+#include "GameStateGameOver.h"
+#include "GameStatePause.h"
 #include <cassert>
 
 namespace SnakeGame
@@ -49,7 +51,7 @@ namespace SnakeGame
 			}
 		}
 
-		if (game.gameStateChangeType != GameStateChangeType::None)
+		if (game.pendingGameStateType != GameStateType::None)
 		{
 			game.gameStateStack.push_back({ game.pendingGameStateType, nullptr, game.pendingGameStateIsExclusivelyVisible });
 			InitGameState(game, game.gameStateStack.back());
@@ -135,10 +137,14 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
+			state.data = std::make_shared<GameStateGameOverData>();
+			InitGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::Win:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
+		case SnakeGame::GameStateType::Pause:
+			state.data = std::make_shared<GameStatePauseData>();
+			InitGameStatePause(*(GameStatePauseData*)state.data.get(), game);
 			break;
 		default:
 			assert(false);
@@ -153,15 +159,17 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::MainMenu:
 			break;
 		case SnakeGame::GameStateType::Playing:
-			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game);
+			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
+			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Win:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
+		case SnakeGame::GameStateType::Pause:
+			ShutdownGameStatePause(*(GameStatePauseData*)state.data.get());
 			break;
 		default:
 			assert(false);
@@ -181,10 +189,12 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
+			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event);
 			break;
 		case SnakeGame::GameStateType::Win:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
+		case SnakeGame::GameStateType::Pause:
+			HandleGameStatePauseWindowEvent(*(GameStatePauseData*)state.data.get(), game, event);
 			break;
 		default:
 			assert(false);
@@ -204,10 +214,12 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
+			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::Win:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
+		case SnakeGame::GameStateType::Pause:
+			UpdateGameStatePause(*(GameStatePauseData*)state.data.get(), game);
 			break;
 		default:
 			assert(false);
@@ -227,10 +239,12 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
+			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game, window);
 			break;
 		case SnakeGame::GameStateType::Win:
 			break;
-		case SnakeGame::GameStateType::ExitDialog:
+		case SnakeGame::GameStateType::Pause:
+			DrawGameStatePause(*(GameStatePauseData*)state.data.get(), game, window);
 			break;
 		default:
 			assert(false);

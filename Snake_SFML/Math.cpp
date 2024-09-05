@@ -95,4 +95,11 @@ namespace SnakeGame
 		}
 		return true;
 	}
+
+	bool IsMouseOnText(const sf::Vector2i mousePosition, sf::Text& text)
+	{
+		sf::FloatRect rectText = text.getGlobalBounds();
+		return mousePosition.x > rectText.left && mousePosition.x < rectText.left + rectText.width &&
+			mousePosition.y > rectText.top && mousePosition.y < rectText.top + rectText.height;
+	}
 }

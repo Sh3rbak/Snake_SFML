@@ -59,16 +59,24 @@ namespace SnakeGame
 
 	GridCell* FindEmptyCell(GameGrid& gameGrid)
 	{
+		std::vector<GridCell*> positions;
 		for (auto i = gameGrid.cells.begin(); i != gameGrid.cells.end(); ++i)
 		{
 			for (auto j = i->begin(); j != i->end(); ++j)
 			{
 				if (j->type == GameItemType::None)
 				{
-					return &(*j);
+					positions.push_back(&(*j));
 				}
 			}
 		}
-		return nullptr;
+
+		if (positions.size() <= 0)
+		{
+			return nullptr;
+		}
+
+		int randPos = rand() % positions.size() - 1;
+		return positions[randPos];
 	}
 }
