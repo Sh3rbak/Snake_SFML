@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameStateMainMenu.h"
 #include "GameStatePlaying.h"
 #include "GameStateGameOver.h"
 #include "GameStatePause.h"
@@ -11,7 +12,7 @@ namespace SnakeGame
 		game.gameStateChangeType = GameStateChangeType::None;
 		game.pendingGameStateType = GameStateType::None;
 		game.pendingGameStateIsExclusivelyVisible = false;
-		SwitchGameState(game, GameStateType::Playing);
+		SwitchGameState(game, GameStateType::MainMenu);
 	}
 
 	void HandleWindowEvents(Game& game, sf::RenderWindow& window)
@@ -129,6 +130,8 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
+			state.data = std::make_shared<GameStateMainMenuData>();
+			InitGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			state.data = std::make_shared<GameStatePlayingData>();
@@ -157,6 +160,7 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
+			ShutdownGameStateMainMenu(*(GameStateMainMenuData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Playing:
 			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get());
@@ -182,6 +186,7 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
+			HandleGameStateMainMenuWindowEvent(*(GameStateMainMenuData*)state.data.get(), game, event);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event, mousePosition);
@@ -207,6 +212,7 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
+			UpdateGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			UpdateGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, deltaTime);
@@ -232,6 +238,7 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
+			DrawGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game, window);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			DrawGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, window);

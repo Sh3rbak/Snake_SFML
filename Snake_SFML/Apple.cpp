@@ -2,11 +2,11 @@
 
 namespace SnakeGame
 {
-	void InitApple(Apple& apple)
+	void InitApple(Apple& apple, sf::Texture& texture)
 	{
-		apple.shape.setRadius(APPLE_SIZE);
-		apple.shape.setFillColor(sf::Color::Red);
-		apple.shape.setOrigin({ APPLE_SIZE, APPLE_SIZE});
+		apple.sprite.setTexture(texture);
+		apple.sprite.setOrigin(GetItemOrigin(apple.sprite, { 0.5f, 0.5f }));
+		apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE, APPLE_SIZE }));
 	}
 
 	void ResetAppleState(Apple& apple)
@@ -31,7 +31,7 @@ namespace SnakeGame
 			return;
 		}
 
-		apple.shape.setPosition(apple.position);
-		window.draw(apple.shape);
+		apple.sprite.setPosition(apple.position);
+		window.draw(apple.sprite);
 	}
 }

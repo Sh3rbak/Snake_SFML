@@ -22,8 +22,8 @@ namespace SnakeGame
 			};
 
 		setTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
-		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
+		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 20.f;
 		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);

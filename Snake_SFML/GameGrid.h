@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "GameSettings.h"
 #include "Math.h"
+#include "Fence.h"
 
 namespace SnakeGame
 {
@@ -10,7 +11,8 @@ namespace SnakeGame
 	{
 		None,
 		Apple,
-		Snake
+		Snake,
+		Fence
 	};
 
 	struct GridCell

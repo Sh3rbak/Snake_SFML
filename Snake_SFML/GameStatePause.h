@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Menu.h"
-#include "Math.h"
 
 namespace SnakeGame
 {

@@ -9,11 +9,11 @@ namespace SnakeGame
 	{
 		PositionInGrid positionInGrid;
 		Position position;
-		sf::CircleShape shape;
+		sf::Sprite sprite;
 		bool isEaten = false;
 	};
 
-	void InitApple(Apple& apple);
+	void InitApple(Apple& apple, sf::Texture& texture);
 	void ResetAppleState(Apple& apple);
 	void SetApplePosition(Apple& apple, Position position);
 	void MarkAppleAsEaten(Apple& apple);

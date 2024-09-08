@@ -37,8 +37,8 @@ namespace SnakeGame
 		{
 			for (int j = 0; j < GRID_CELLS_VERTICAL; ++j)
 			{
-				float positionX = static_cast<float>(CELL_SIZE * i + static_cast<float>(CELL_SIZE / 2));
-				float positionY = static_cast<float>(CELL_SIZE * j + FIELD_ON_TOP_SCREEN + static_cast<float>(CELL_SIZE / 2));
+				float positionX = static_cast<float>(CELL_SIZE * i + static_cast<float>(CELL_SIZE / 2) + HORIZONTAL_SPACE_FOR_GAME_FIELD);
+				float positionY = static_cast<float>(CELL_SIZE * j + FIELD_ON_TOP_SCREEN + static_cast<float>(CELL_SIZE / 2) + VERTICAL_SPACE_FOR_GAME_FIELD);
 				GridCell& cell = gameGrid.cells[i][j];
 				cell.position = { positionX, positionY };
 			}
