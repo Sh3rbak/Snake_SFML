@@ -26,17 +26,32 @@ namespace SnakeGame
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 10.f;
 		data.menu.rootItem.children.push_back(&data.startGameItem);
-		data.menu.rootItem.children.push_back(&data.gameModsItem);
-		data.menu.rootItem.children.push_back(&data.settingsItem);
+		data.menu.rootItem.children.push_back(&data.gameDifficultyItem);
+		data.menu.rootItem.children.push_back(&data.optionsItem);
 		data.menu.rootItem.children.push_back(&data.leaderBoardItem);
 		data.menu.rootItem.children.push_back(&data.exitGameItem);
 
 		setTextParametrs(data.startGameItem.text, "Start Game", data.font, 36);
 
-		setTextParametrs(data.gameModsItem.text, "Game Mods", data.font, 36);
+		setTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, 36);
+		setTextParametrs(data.gameDifficultyItem.hintText, "Difficulty", data.font, 48);
+		data.gameDifficultyItem.childrenOrientation = Orientation::Vertical;
+		data.gameDifficultyItem.childrenAlignment = Alignment::Middle;
+		data.gameDifficultyItem.childrenSpacing = 20.f;
+		data.gameDifficultyItem.children.push_back(&data.beginnerItem);
+		data.gameDifficultyItem.children.push_back(&data.easyItem);
+		data.gameDifficultyItem.children.push_back(&data.normalItem);
+		data.gameDifficultyItem.children.push_back(&data.hardItem);
+		data.gameDifficultyItem.children.push_back(&data.challengingItem);
+
+		setTextParametrs(data.beginnerItem.text, "Beginner", data.font, 36);
+		setTextParametrs(data.easyItem.text, "Easy", data.font, 36);
+		setTextParametrs(data.normalItem.text, "Normal", data.font, 36);
+		setTextParametrs(data.hardItem.text, "Hard", data.font, 36);
+		setTextParametrs(data.challengingItem.text, "Challenging", data.font, 36);
 
 
-		setTextParametrs(data.settingsItem.text, "Setting", data.font, 36);
+		setTextParametrs(data.optionsItem.text, "Options", data.font, 36);
 
 		
 		setTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, 36);
@@ -46,11 +61,11 @@ namespace SnakeGame
 		data.exitGameItem.childrenOrientation = Orientation::Vertical;
 		data.exitGameItem.childrenAlignment = Alignment::Middle;
 		data.exitGameItem.childrenSpacing = 20.f;
-		data.exitGameItem.children.push_back(&data.yesItem);
 		data.exitGameItem.children.push_back(&data.noItem);
+		data.exitGameItem.children.push_back(&data.yesItem);
 
-		setTextParametrs(data.yesItem.text, "Yes", data.font, 36);
 		setTextParametrs(data.noItem.text, "No", data.font, 36);
+		setTextParametrs(data.yesItem.text, "Yes", data.font, 36);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.startGameItem);
@@ -67,7 +82,7 @@ namespace SnakeGame
 
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape)
+			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
 			{
 				CollapseSelectedItem(data.menu);
 			} 
@@ -77,28 +92,54 @@ namespace SnakeGame
 				{
 					SwitchGameState(game, GameStateType::Playing);
 				}
-				else if (data.menu.selectedItem == &data.exitGameItem)
+				else if (data.menu.selectedItem == &data.gameDifficultyItem)
 				{
 					ExpandSelectedItem(data.menu);
 				}
-				else if (data.menu.selectedItem == &data.yesItem)
+				else if (data.menu.selectedItem == &data.beginnerItem)
 				{
-					SwitchGameState(game, GameStateType::None);
+					game.difficulty = GameDifficulty::Beginner;
+				}
+				else if (data.menu.selectedItem == &data.easyItem)
+				{
+					game.difficulty = GameDifficulty::Easy;
+				}
+				else if (data.menu.selectedItem == &data.normalItem)
+				{
+					game.difficulty = GameDifficulty::Normal;
+				}
+				else if (data.menu.selectedItem == &data.hardItem)
+				{
+					game.difficulty = GameDifficulty::Hard;
+				}
+				else if (data.menu.selectedItem == &data.challengingItem)
+				{
+					game.difficulty = GameDifficulty::Challenge;
+				}
+				else if (data.menu.selectedItem == &data.exitGameItem)
+				{
+					ExpandSelectedItem(data.menu);
 				}
 				else if (data.menu.selectedItem == &data.noItem)
 				{
 					CollapseSelectedItem(data.menu);
 				}
+				else if (data.menu.selectedItem == &data.yesItem)
+				{
+					SwitchGameState(game, GameStateType::None);
+				}
 			}
 
 			Orientation orientation = data.menu.selectedItem->parent->childrenOrientation;
 			if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Up ||
-				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Left)
+				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Left ||
+				event.key.code == sf::Keyboard::W)
 			{
 				SelectPreviousMenuItem(data.menu);
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
-				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right)
+				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
+				event.key.code == sf::Keyboard::S)
 			{
 				SelectNextMenuItem(data.menu);
 			}

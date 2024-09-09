@@ -4,6 +4,15 @@
 
 namespace SnakeGame
 {
+	enum class GameDifficulty
+	{
+		Beginner,
+		Easy,
+		Normal,
+		Hard,
+		Challenge
+	};
+
 	enum class GameStateType
 	{
 		None = 0,
@@ -36,6 +45,9 @@ namespace SnakeGame
 		GameStateChangeType gameStateChangeType = GameStateChangeType::None;
 		GameStateType pendingGameStateType = GameStateType::None;
 		bool pendingGameStateIsExclusivelyVisible = false;
+
+		GameDifficulty difficulty = GameDifficulty::Normal;
+		bool isWinGame = false;
 	};
 
 	void InitGame(Game& game);

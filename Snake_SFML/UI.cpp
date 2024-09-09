@@ -16,20 +16,29 @@ namespace SnakeGame
 		ui.line.setOrigin({ 0, ui.line.getSize().y / 2.f});
 		ui.line.setPosition({ 0, FIELD_ON_TOP_SCREEN });
 
-		ui.pauseText.setString("||");
-		ui.pauseText.setFont(ui.font);
-		ui.pauseText.setCharacterSize(static_cast<int>(FIELD_ON_TOP_SCREEN * 0.6));
-		ui.pauseText.setFillColor(sf::Color::White);
-		ui.pauseText.setOrigin(GetItemOrigin(ui.pauseText, { 0.5f, 0.5f }));
-		ui.pauseText.setPosition({ SCREEN_WIDHT - 30.f, static_cast<int>(FIELD_ON_TOP_SCREEN / 2.f) });
+		ui.pauseButtonText.setString("||");
+		ui.pauseButtonText.setFont(ui.font);
+		ui.pauseButtonText.setCharacterSize(static_cast<int>(FIELD_ON_TOP_SCREEN * 0.6));
+		ui.pauseButtonText.setFillColor(sf::Color::White);
+		ui.pauseButtonText.setOrigin(GetItemOrigin(ui.pauseButtonText, { 0.5f, 0.5f }));
+		ui.pauseButtonText.setPosition({ SCREEN_WIDHT - 30.f, static_cast<int>(FIELD_ON_TOP_SCREEN / 2.f) });
+
+		ui.timeAtBeginningText.setString(std::to_string(static_cast<int>(ui.timeAtBeginning)));
+		ui.timeAtBeginningText.setFont(ui.font);
+		ui.timeAtBeginningText.setCharacterSize(60);
+		ui.timeAtBeginningText.setFillColor(sf::Color::White);
 	}
 
-	sf::FloatRect GetGlobalBoundsOfPauseButton(UI& ui)
+	void UpdatePauseTimeUI(UI& ui, const float deltaTime)
 	{
-		return ui.pauseText.getGlobalBounds();
+		if (ui.timeAtBeginning > 0)
+		{
+			ui.timeAtBeginning -= deltaTime;
+		}
+		ui.timeAtBeginningText.setString(std::to_string(static_cast<int>(ui.timeAtBeginning)));
 	}
 
-	void UpdateUI(UI& ui, const int score)
+	void UpdateScoreUI(UI& ui, const int score)
 	{
 		ui.scoreText.setString(std::to_string(score));
 	}
@@ -40,6 +49,18 @@ namespace SnakeGame
 		ui.scoreText.setPosition({ SCREEN_WIDHT - 80.f, static_cast<int>(FIELD_ON_TOP_SCREEN / 2.f) });
 		window.draw(ui.scoreText);
 		window.draw(ui.line);
-		window.draw(ui.pauseText);
+		window.draw(ui.pauseButtonText);
+
+		ui.timeAtBeginningText.setOrigin(GetItemOrigin(ui.timeAtBeginningText, { 0.5f, 0.5f }));
+		ui.timeAtBeginningText.setPosition({ SCREEN_WIDHT / 2.f, SCREEN_HEIGHT / 3.f });
+		if (ui.timeAtBeginning > 0)
+		{
+			window.draw(ui.timeAtBeginningText);
+		}
+	}
+
+	void ReturnOriginalPauseTime(UI& ui)
+	{
+		ui.timeAtBeginning = PAUSE_AT_BEGINNING;
 	}
 }

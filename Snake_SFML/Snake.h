@@ -21,7 +21,7 @@ namespace SnakeGame
 		sf::Sprite sprite;
 		SnakeDirection direction = SnakeDirection::Left;
 
-		PartOfBody() : position({ 0,0 }), positionInGrid({ 0,0 }) {}
+		PartOfBody() : position({ -50.f, -50.f }), positionInGrid({ 0,0 }) {}
 	};
 
 	struct Snake

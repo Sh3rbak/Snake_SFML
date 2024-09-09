@@ -57,7 +57,7 @@ namespace SnakeGame
 		return &gameGrid.cells[randomCellX][randomCellY];
 	}
 
-	GridCell* FindEmptyCell(GameGrid& gameGrid)
+	GridCell* FindEmptyCell(GameGrid& gameGrid, GridCell& nextCell)
 	{
 		std::vector<GridCell*> positions;
 		for (auto i = gameGrid.cells.begin(); i != gameGrid.cells.end(); ++i)
@@ -70,13 +70,21 @@ namespace SnakeGame
 				}
 			}
 		}
+		// erase cell where snake will be
+		for (int i = 0; i < positions.size(); ++i)
+		{
+			if (positions[i] == &nextCell)
+			{
+				positions.erase(positions.begin() + i);
+			}
+		}
 
-		if (positions.size() <= 0)
+		if (positions.size() < 1)
 		{
 			return nullptr;
 		}
 
-		int randPos = rand() % positions.size() - 1;
+		int randPos = rand() % positions.size();
 		return positions[randPos];
 	}
 }

@@ -11,12 +11,17 @@ namespace SnakeGame
 		sf::Font font;
 
 		MenuItem startGameItem;
-		MenuItem gameModsItem;
-		MenuItem settingsItem;
+		MenuItem gameDifficultyItem;
+		MenuItem beginnerItem;
+		MenuItem easyItem;
+		MenuItem normalItem;
+		MenuItem hardItem;
+		MenuItem challengingItem;
+		MenuItem optionsItem;
 		MenuItem leaderBoardItem;
 		MenuItem exitGameItem;
-		MenuItem yesItem;
 		MenuItem noItem;
+		MenuItem yesItem;
 
 		Menu menu;
 	};

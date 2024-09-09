@@ -21,7 +21,15 @@ namespace SnakeGame
 				}
 			};
 
-		setTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
+		if (game.isWinGame)
+		{
+			setTextParametrs(data.menu.rootItem.hintText, "YOU WIN", data.fontTitle, 200, sf::Color::Green);
+		}
+		else
+		{
+			setTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
+		}
+
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 20.f;

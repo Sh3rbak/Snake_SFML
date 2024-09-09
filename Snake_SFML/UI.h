@@ -10,13 +10,17 @@ namespace SnakeGame
 		sf::Font font;
 
 		sf::Text scoreText;
-		sf::Text pauseText;
+		sf::Text pauseButtonText;
+
+		float timeAtBeginning = PAUSE_AT_BEGINNING;
+		sf::Text timeAtBeginningText;
 
 		sf::RectangleShape line;
 	};
 
 	void InitUI(UI& ui, sf::Font font);
-	sf::FloatRect GetGlobalBoundsOfPauseButton(UI& ui);
-	void UpdateUI(UI& ui, const int score);
+	void UpdatePauseTimeUI(UI& ui, const float deltaTime);
+	void UpdateScoreUI(UI& ui, const int score);
 	void DrawUI(UI& ui, sf::RenderWindow& window);
+	void ReturnOriginalPauseTime(UI& ui);
 }

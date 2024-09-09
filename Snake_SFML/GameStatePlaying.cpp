@@ -4,6 +4,33 @@
 
 namespace SnakeGame
 {
+	void SetDifficultyGame(GameStatePlayingData& data, Game& game)
+	{
+		switch (game.difficulty)
+		{
+		case SnakeGame::GameDifficulty::Beginner:
+			data.snakeSpeed = SNAKE_SPEED_BEGINNER;
+			data.pointPerApple = NUM_POINTS_PER_APPLE_BEGINNER;
+			break;
+		case SnakeGame::GameDifficulty::Easy:
+			data.snakeSpeed = SNAKE_SPEED_EASY;
+			data.pointPerApple = NUM_POINTS_PER_APPLE_EASY;
+			break;
+		case SnakeGame::GameDifficulty::Normal:
+			data.snakeSpeed = SNAKE_SPEED_NORMAL;
+			data.pointPerApple = NUM_POINTS_PER_APPLE_NORMAL;
+			break;
+		case SnakeGame::GameDifficulty::Hard:
+			data.snakeSpeed = SNAKE_SPEED_HARD;
+			data.pointPerApple = NUM_POINTS_PER_APPLE_HARD;
+			break;
+		case SnakeGame::GameDifficulty::Challenge:
+			data.snakeSpeed = SNAKE_SPEED_CHALLENGE;
+			data.pointPerApple = NUM_POINTS_PER_APPLE_CHALLENGE;
+			break;
+		}
+	}
+
 	void SetFence(GameStatePlayingData& data, sf::Texture& fenceTexture, sf::Texture& fenceInCornerTexture)
 	{
 		auto setFence = [&data](GridCell& cell, sf::Texture& texture, Direction direction,
@@ -48,6 +75,9 @@ namespace SnakeGame
 
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game)
 	{
+		SetDifficultyGame(data, game);
+		game.isWinGame = false;
+
 		assert(data.headSnakeTexture.loadFromFile(RESOURCES_PATH + "Textures/SnakeHead.png"));
 		assert(data.bodySnakeTexture.loadFromFile(RESOURCES_PATH + "Textures/SnakeBody.png"));
 		assert(data.appleTexture.loadFromFile(RESOURCES_PATH + "Textures/Apple.png"));
@@ -74,6 +104,10 @@ namespace SnakeGame
 		ChangeTypeCell(*centerGrid, GameItemType::Snake);
 
 		GridCell* randomCell = GetRandomCell(data.gameGrid);
+		while (IsAnythingInCell(*randomCell))
+		{
+			randomCell = GetRandomCell(data.gameGrid);
+		}
 		SetApplePosition(data.apple, randomCell->position);
 		ChangeTypeCell(*randomCell, GameItemType::Apple);
 	}
@@ -92,35 +126,39 @@ namespace SnakeGame
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape)
+			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::P)
 			{
 				PushGameState(game, GameStateType::Pause, false);
+				data.timeAtBeginning = 0;
+				ReturnOriginalPauseTime(data.ui);
 			}
 		}
-		if (IsMouseOnText(mousePosition, data.ui.pauseText))
+		if (IsMouseOnText(mousePosition, data.ui.pauseButtonText))
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				PushGameState(game, GameStateType::Pause, false);
+				data.timeAtBeginning = 0;
+				ReturnOriginalPauseTime(data.ui);
 			}
 		}
 	}
 
 	void SetNewDirection(GameStatePlayingData& data)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
 			data.newDirection = SnakeDirection::Up;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		{
 			data.newDirection = SnakeDirection::Right;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
 			data.newDirection = SnakeDirection::Down;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			data.newDirection = SnakeDirection::Left;
 		}
@@ -175,11 +213,18 @@ namespace SnakeGame
 
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime)
 	{		
+		if (data.timeAtBeginning < PAUSE_AT_BEGINNING)
+		{
+			UpdatePauseTimeUI(data.ui, deltaTime);
+			data.timeAtBeginning += deltaTime;
+			return;
+		}
+
 		SetNewDirection(data);
 
 		// delay between movement
 		data.timeBetweenLoop += deltaTime;
-		if(data.timeBetweenLoop < PAUSE_BETWEEN_LOOP)
+		if(data.timeBetweenLoop < data.snakeSpeed)
 		{
 			return;
 		}
@@ -217,7 +262,8 @@ namespace SnakeGame
 				{
 					if (score > 10)
 					{
-						randomCell = FindEmptyCell(data.gameGrid);
+						randomCell = FindEmptyCell(data.gameGrid, *currectCell);
+						break;
 					}
 					randomCell = GetRandomCell(data.gameGrid);
 					++score;
@@ -226,11 +272,16 @@ namespace SnakeGame
 				if (randomCell == nullptr)
 				{
 					SwitchGameState(game, GameStateType::GameOver);
+					game.isWinGame = true;
+					return;
 				}
 				SetApplePosition(data.apple, randomCell->position);
 				ChangeTypeCell(*randomCell, GameItemType::Apple);
-				PushPartOfBody(data.snake, data.bodySnakeTexture);
-				++data.numEatenApples;
+				for (int i = 0; i < SNAKE_LEINGH_PER_APPLE; ++i)
+				{
+					PushPartOfBody(data.snake, data.bodySnakeTexture);
+				}
+				data.numEatenApples += data.pointPerApple;
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -244,7 +295,7 @@ namespace SnakeGame
 
 		UpdateCellsTypeWhenSnakeMoves(data, *currectCell, currectPositionInGrid);
 
-		UpdateUI(data.ui, data.numEatenApples);
+		UpdateScoreUI(data.ui, data.numEatenApples);
 	}
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, Game& game, sf::RenderWindow& window)

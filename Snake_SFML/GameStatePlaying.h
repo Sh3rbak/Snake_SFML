@@ -25,8 +25,12 @@ namespace SnakeGame
 		GameGrid gameGrid;
 
 		unsigned int numEatenApples = 0;
+		float timeAtBeginning = 0;
 		float timeBetweenLoop = 0;
 		SnakeDirection newDirection = SnakeDirection::Left;
+
+		int pointPerApple = 0;
+		float snakeSpeed = 0;
 
 		sf::Font font;
 		UI ui;
@@ -42,4 +46,6 @@ namespace SnakeGame
 	void SetNewDirection(GameStatePlayingData& data);
 	void CalculateNextCellDependingOnDirection(GameStatePlayingData& data, PositionInGrid& positionInGrid);
 	void UpdateCellsTypeWhenSnakeMoves(GameStatePlayingData& data, GridCell& newCell, PositionInGrid newPositionInGrid);
+
+	void SetDifficultyGame(GameStatePlayingData& data, Game& game);
 }
