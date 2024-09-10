@@ -238,14 +238,6 @@ namespace SnakeGame
 
 		CalculateNextCellDependingOnDirection(data, currectPositionInGrid);
 
-		//checking collision with board
-		if (currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
-			currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL)
-		{
-			SwitchGameState(game, GameStateType::GameOver);
-			return;
-		}
-
 		currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
 		if (IsAnythingInCell(*currectCell))
@@ -272,6 +264,7 @@ namespace SnakeGame
 				if (randomCell == nullptr)
 				{
 					SwitchGameState(game, GameStateType::GameOver);
+					game.gameScore = data.numEatenApples;
 					game.isWinGame = true;
 					return;
 				}
@@ -287,10 +280,20 @@ namespace SnakeGame
 			case SnakeGame::GameItemType::Snake:
 			case SnakeGame::GameItemType::Fence:
 			{
-				SwitchGameState(game, GameStateType::GameOver);
+				data.isGameFinished = true;
 				break;
 			}
 			}
+		}
+
+		//checking collision with board
+		bool isOutsideField = currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
+			                  currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL;
+		if (isOutsideField || data.isGameFinished)
+		{
+			SwitchGameState(game, GameStateType::GameOver);
+			game.gameScore = data.numEatenApples;
+			return;
 		}
 
 		UpdateCellsTypeWhenSnakeMoves(data, *currectCell, currectPositionInGrid);

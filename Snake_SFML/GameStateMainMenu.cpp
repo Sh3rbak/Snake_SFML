@@ -50,7 +50,6 @@ namespace SnakeGame
 		setTextParametrs(data.hardItem.text, "Hard", data.font, 36);
 		setTextParametrs(data.challengingItem.text, "Challenging", data.font, 36);
 
-
 		setTextParametrs(data.optionsItem.text, "Options", data.font, 36);
 
 		
@@ -70,10 +69,13 @@ namespace SnakeGame
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.startGameItem);
 	}
+
 	void ShutdownGameStateMainMenu(GameStateMainMenuData& data)
 	{
+		// No need to do anything here
 	}
-	void HandleGameStateMainMenuWindowEvent(GameStateMainMenuData& data, Game& game, const sf::Event& event)
+
+	void HandleGameStateMainMenuWindowEvent(GameStateMainMenuData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition)
 	{
 		if (!data.menu.selectedItem)
 		{
@@ -88,46 +90,7 @@ namespace SnakeGame
 			} 
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
-				if (data.menu.selectedItem == &data.startGameItem)
-				{
-					SwitchGameState(game, GameStateType::Playing);
-				}
-				else if (data.menu.selectedItem == &data.gameDifficultyItem)
-				{
-					ExpandSelectedItem(data.menu);
-				}
-				else if (data.menu.selectedItem == &data.beginnerItem)
-				{
-					game.difficulty = GameDifficulty::Beginner;
-				}
-				else if (data.menu.selectedItem == &data.easyItem)
-				{
-					game.difficulty = GameDifficulty::Easy;
-				}
-				else if (data.menu.selectedItem == &data.normalItem)
-				{
-					game.difficulty = GameDifficulty::Normal;
-				}
-				else if (data.menu.selectedItem == &data.hardItem)
-				{
-					game.difficulty = GameDifficulty::Hard;
-				}
-				else if (data.menu.selectedItem == &data.challengingItem)
-				{
-					game.difficulty = GameDifficulty::Challenge;
-				}
-				else if (data.menu.selectedItem == &data.exitGameItem)
-				{
-					ExpandSelectedItem(data.menu);
-				}
-				else if (data.menu.selectedItem == &data.noItem)
-				{
-					CollapseSelectedItem(data.menu);
-				}
-				else if (data.menu.selectedItem == &data.yesItem)
-				{
-					SwitchGameState(game, GameStateType::None);
-				}
+				RunSelectedItem(data, game);
 			}
 
 			Orientation orientation = data.menu.selectedItem->parent->childrenOrientation;
@@ -144,10 +107,24 @@ namespace SnakeGame
 				SelectNextMenuItem(data.menu);
 			}
 		}
+		MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
+		for (auto& child : expandedItem->children)
+		{
+			if (IsMouseOnText(mousePosition, child->text))
+			{
+				SelectMenuItem(data.menu, child);
+				if (event.key.code == sf::Mouse::Left)
+				{
+					RunSelectedItem(data, game);
+				}
+			}
+		}
 	}
+
 	void UpdateGameStateMainMenu(GameStateMainMenuData& data, Game& game)
 	{
 	}
+
 	void DrawGameStateMainMenu(GameStateMainMenuData& data, Game& game, sf::RenderWindow& window)
 	{
 		sf::Vector2f viewSize = (sf::Vector2f)window.getSize();
@@ -158,5 +135,49 @@ namespace SnakeGame
 		window.draw(*hintText);
 
 		DrawMenu(data.menu, window, viewSize / 2.f, { 0.5f, 0.f });
+	}
+
+	void RunSelectedItem(GameStateMainMenuData& data, Game& game)
+	{
+		if (data.menu.selectedItem == &data.startGameItem)
+		{
+			SwitchGameState(game, GameStateType::Playing);
+		}
+		else if (data.menu.selectedItem == &data.gameDifficultyItem)
+		{
+			ExpandSelectedItem(data.menu);
+		}
+		else if (data.menu.selectedItem == &data.beginnerItem)
+		{
+			game.difficulty = GameDifficulty::Beginner;
+		}
+		else if (data.menu.selectedItem == &data.easyItem)
+		{
+			game.difficulty = GameDifficulty::Easy;
+		}
+		else if (data.menu.selectedItem == &data.normalItem)
+		{
+			game.difficulty = GameDifficulty::Normal;
+		}
+		else if (data.menu.selectedItem == &data.hardItem)
+		{
+			game.difficulty = GameDifficulty::Hard;
+		}
+		else if (data.menu.selectedItem == &data.challengingItem)
+		{
+			game.difficulty = GameDifficulty::Challenge;
+		}
+		else if (data.menu.selectedItem == &data.exitGameItem)
+		{
+			ExpandSelectedItem(data.menu);
+		}
+		else if (data.menu.selectedItem == &data.noItem)
+		{
+			CollapseSelectedItem(data.menu);
+		}
+		else if (data.menu.selectedItem == &data.yesItem)
+		{
+			SwitchGameState(game, GameStateType::None);
+		}
 	}
 }

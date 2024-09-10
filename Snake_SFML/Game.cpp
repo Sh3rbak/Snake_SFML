@@ -9,6 +9,16 @@ namespace SnakeGame
 {
 	void InitGame(Game& game)
 	{
+		game.recordsTable =
+		{
+			{ "Jonny", 1000 },
+			{ "Grace", 500 },
+			{ "Bella", 334 },
+			{ "Alice", 250 },
+			{ "Lucas", 200 },
+			{ "Player", 0 }
+		};
+
 		game.gameStateChangeType = GameStateChangeType::None;
 		game.pendingGameStateType = GameStateType::None;
 		game.pendingGameStateIsExclusivelyVisible = false;
@@ -143,8 +153,6 @@ namespace SnakeGame
 			state.data = std::make_shared<GameStateGameOverData>();
 			InitGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
-		case SnakeGame::GameStateType::Win:
-			break;
 		case SnakeGame::GameStateType::Pause:
 			state.data = std::make_shared<GameStatePauseData>();
 			InitGameStatePause(*(GameStatePauseData*)state.data.get(), game);
@@ -170,8 +178,6 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::GameOver:
 			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get());
 			break;
-		case SnakeGame::GameStateType::Win:
-			break;
 		case SnakeGame::GameStateType::Pause:
 			ShutdownGameStatePause(*(GameStatePauseData*)state.data.get());
 			break;
@@ -186,7 +192,7 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
-			HandleGameStateMainMenuWindowEvent(*(GameStateMainMenuData*)state.data.get(), game, event);
+			HandleGameStateMainMenuWindowEvent(*(GameStateMainMenuData*)state.data.get(), game, event, mousePosition);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event, mousePosition);
@@ -194,12 +200,10 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
-			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event);
-			break;
-		case SnakeGame::GameStateType::Win:
+			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event, mousePosition);
 			break;
 		case SnakeGame::GameStateType::Pause:
-			HandleGameStatePauseWindowEvent(*(GameStatePauseData*)state.data.get(), game, event);
+			HandleGameStatePauseWindowEvent(*(GameStatePauseData*)state.data.get(), game, event, mousePosition);
 			break;
 		default:
 			assert(false);
@@ -221,8 +225,6 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
-			break;
-		case SnakeGame::GameStateType::Win:
 			break;
 		case SnakeGame::GameStateType::Pause:
 			UpdateGameStatePause(*(GameStatePauseData*)state.data.get(), game);
@@ -247,8 +249,6 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game, window);
-			break;
-		case SnakeGame::GameStateType::Win:
 			break;
 		case SnakeGame::GameStateType::Pause:
 			DrawGameStatePause(*(GameStatePauseData*)state.data.get(), game, window);

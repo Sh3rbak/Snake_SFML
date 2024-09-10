@@ -25,6 +25,8 @@ namespace SnakeGame
 		GameGrid gameGrid;
 
 		unsigned int numEatenApples = 0;
+		bool isGameFinished = false;
+
 		float timeAtBeginning = 0;
 		float timeBetweenLoop = 0;
 		SnakeDirection newDirection = SnakeDirection::Left;

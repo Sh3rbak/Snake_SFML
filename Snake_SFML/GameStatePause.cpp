@@ -39,11 +39,12 @@ namespace SnakeGame
 		data.backround.setSize({ SCREEN_WIDHT, SCREEN_HEIGHT });
 		data.backround.setFillColor(sf::Color(0, 0, 0, 125));
 	}
+
 	void ShutdownGameStatePause(GameStatePauseData& data)
 	{
-
+		// No need to do anything here
 	}
-	void HandleGameStatePauseWindowEvent(GameStatePauseData& data, Game& game, const sf::Event& event)
+	void HandleGameStatePauseWindowEvent(GameStatePauseData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition)
 	{
 		if (!data.menu.selectedItem)
 		{
@@ -58,18 +59,7 @@ namespace SnakeGame
 			}
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
-				if (data.menu.selectedItem == &data.continueItem)
-				{
-					PopGameState(game);
-				}
-				else if (data.menu.selectedItem == &data.newGameItem)
-				{
-					SwitchGameState(game, GameStateType::Playing);
-				}
-				else if (data.menu.selectedItem == &data.goToMenuItem)
-				{
-					SwitchGameState(game, GameStateType::MainMenu);
-				}
+				RunSelectedItem(data, game);
 			}
 
 			Orientation orientation = data.menu.selectedItem->parent->childrenOrientation;
@@ -84,10 +74,26 @@ namespace SnakeGame
 				SelectNextMenuItem(data.menu);
 			}
 		}
+
+		MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
+		for (auto& child : expandedItem->children)
+		{
+			if (IsMouseOnText(mousePosition, child->text))
+			{
+				SelectMenuItem(data.menu, child);
+				if (event.key.code == sf::Mouse::Left)
+				{
+					RunSelectedItem(data, game);
+				}
+			}
+		}
 	}
+
 	void UpdateGameStatePause(GameStatePauseData& data, Game& game)
 	{
+
 	}
+
 	void DrawGameStatePause(GameStatePauseData& data, Game& game, sf::RenderWindow& window)
 	{
 		window.draw(data.backround);
@@ -100,5 +106,21 @@ namespace SnakeGame
 		window.draw(*hintText);
 
 		DrawMenu(data.menu, window, viewSize / 2.f, { 0.5f, 0.f });
+	}
+
+	void RunSelectedItem(GameStatePauseData& data, Game& game)
+	{
+		if (data.menu.selectedItem == &data.continueItem)
+		{
+			PopGameState(game);
+		}
+		else if (data.menu.selectedItem == &data.newGameItem)
+		{
+			SwitchGameState(game, GameStateType::Playing);
+		}
+		else if (data.menu.selectedItem == &data.goToMenuItem)
+		{
+			SwitchGameState(game, GameStateType::MainMenu);
+		}
 	}
 }

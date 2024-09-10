@@ -1,6 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "GameSettings.h"
+#include <unordered_map>
 
 namespace SnakeGame
 {
@@ -20,7 +21,6 @@ namespace SnakeGame
 		Playing,
 		LeaderBoard,
 		GameOver,
-		Win,
 		Pause
 	};
 
@@ -48,6 +48,8 @@ namespace SnakeGame
 
 		GameDifficulty difficulty = GameDifficulty::Normal;
 		bool isWinGame = false;
+		int gameScore = 0;
+		std::unordered_map<std::string, int> recordsTable;
 	};
 
 	void InitGame(Game& game);
