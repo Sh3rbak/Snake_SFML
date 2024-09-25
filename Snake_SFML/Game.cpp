@@ -2,6 +2,7 @@
 #include "GameStateMainMenu.h"
 #include "GameStatePlaying.h"
 #include "GameStateGameOver.h"
+#include "GameStateEnterName.h"
 #include "GameStatePause.h"
 #include <cassert>
 
@@ -11,12 +12,11 @@ namespace SnakeGame
 	{
 		game.recordsTable =
 		{
-			{ "Jonny", 1000 },
-			{ "Grace", 500 },
-			{ "Bella", 334 },
-			{ "Alice", 250 },
-			{ "Lucas", 200 },
-			{ "Player", 0 }
+			{ "Jonny", 8 },
+			{ "Grace", 6 },
+			{ "Bella", 4 },
+			{ "Alice", 2 },
+			{ "Lucas", 1 }
 		};
 
 		game.gameStateChangeType = GameStateChangeType::None;
@@ -153,6 +153,10 @@ namespace SnakeGame
 			state.data = std::make_shared<GameStateGameOverData>();
 			InitGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
+		case SnakeGame::GameStateType::EnterName:
+			state.data = std::make_shared<GameStateEnterNameData>();
+			InitGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game);
+			break;
 		case SnakeGame::GameStateType::Pause:
 			state.data = std::make_shared<GameStatePauseData>();
 			InitGameStatePause(*(GameStatePauseData*)state.data.get(), game);
@@ -176,7 +180,10 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::LeaderBoard:
 			break;
 		case SnakeGame::GameStateType::GameOver:
-			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get());
+			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
+			break;
+		case SnakeGame::GameStateType::EnterName:
+			ShutdownGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::Pause:
 			ShutdownGameStatePause(*(GameStatePauseData*)state.data.get());
@@ -202,6 +209,9 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::GameOver:
 			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event, mousePosition);
 			break;
+		case SnakeGame::GameStateType::EnterName:
+			HandleGameStateEnterNameWindowEvent(*(GameStateEnterNameData*)state.data.get(), game, event, mousePosition);
+			break;
 		case SnakeGame::GameStateType::Pause:
 			HandleGameStatePauseWindowEvent(*(GameStatePauseData*)state.data.get(), game, event, mousePosition);
 			break;
@@ -226,6 +236,9 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::GameOver:
 			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
+		case SnakeGame::GameStateType::EnterName:
+			UpdateGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game);
+			break;
 		case SnakeGame::GameStateType::Pause:
 			UpdateGameStatePause(*(GameStatePauseData*)state.data.get(), game);
 			break;
@@ -249,6 +262,9 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game, window);
+			break;
+		case SnakeGame::GameStateType::EnterName:
+			DrawGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game, window);
 			break;
 		case SnakeGame::GameStateType::Pause:
 			DrawGameStatePause(*(GameStatePauseData*)state.data.get(), game, window);

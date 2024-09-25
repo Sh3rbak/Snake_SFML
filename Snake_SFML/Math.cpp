@@ -102,4 +102,23 @@ namespace SnakeGame
 		return mousePosition.x > rectText.left && mousePosition.x < rectText.left + rectText.width &&
 			mousePosition.y > rectText.top && mousePosition.y < rectText.top + rectText.height;
 	}
+	bool IsAllowSymbol(const sf::Event& event)
+	{
+		if (event.type == sf::Event::TextEntered)
+		{
+			if (event.text.unicode >= 48 && event.text.unicode <= 57)
+			{
+				return true;
+			}
+			else if (event.text.unicode >= 65 && event.text.unicode <= 90)
+			{
+				return true;
+			}
+			else if (event.text.unicode >= 97 && event.text.unicode <= 122)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

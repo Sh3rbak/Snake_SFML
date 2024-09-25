@@ -138,10 +138,12 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrid.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameStateEnterName.cpp" />
     <ClCompile Include="GameStateGameOver.cpp" />
     <ClCompile Include="GameStateMainMenu.cpp" />
     <ClCompile Include="GameStatePause.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
+    <ClCompile Include="InputFields.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -153,10 +155,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGrid.h" />
     <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="GameStateEnterName.h" />
     <ClInclude Include="GameStateGameOver.h" />
     <ClInclude Include="GameStateMainMenu.h" />
     <ClInclude Include="GameStatePause.h" />
     <ClInclude Include="GameStatePlaying.h" />
+    <ClInclude Include="InputFields.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Snake.h" />

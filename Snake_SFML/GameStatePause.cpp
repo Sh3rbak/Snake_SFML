@@ -9,19 +9,7 @@ namespace SnakeGame
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-		auto setTextParametrs = [](sf::Text& text, std::string title, sf::Font& font, int size,
-			sf::Color color = sf::Color::Transparent)
-			{
-				text.setString(title);
-				text.setFont(font);
-				text.setCharacterSize(size);
-				if (color != sf::Color::Transparent)
-				{
-					text.setFillColor(color);
-				}
-			};
-
-		setTextParametrs(data.menu.rootItem.hintText, "PAUSE", data.fontTitle, 200, sf::Color::Red);
+		SetTextParametrs(data.menu.rootItem.hintText, "PAUSE", data.fontTitle, 200, sf::Color::Red);
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 20.f;
@@ -29,9 +17,9 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
 
-		setTextParametrs(data.continueItem.text, "Continue", data.font, 36);
-		setTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
-		setTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
+		SetTextParametrs(data.continueItem.text, "Continue", data.font, 36);
+		SetTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
+		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.continueItem);

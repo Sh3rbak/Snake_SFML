@@ -35,6 +35,7 @@ namespace SnakeGame
 
 	const float PAUSE_AT_BEGINNING = 2.5f; //in seconds
 	
-	const int RECORDS_TABLE_SIZE_AFTER_GAME = 3;
-	const int RECORDS_TABLE_SIZE_IN_LEADER_BOARDS = 5;
+	const int RECORDS_TABLE_SIZE_IN_GAME_OVER = 3;
+	const int MAX_RECORDS_TABLE_SIZE = 5;
+	const int MAX_SYMBOLS_IN_NAME = 3;
 }

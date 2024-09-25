@@ -28,5 +28,6 @@ namespace SnakeGame
 
 	bool IsPointInRect(sf::Vector2f point, sf::Vector2f rectTL, sf::Vector2f rectBR);
 	bool IsMouseOnText(const sf::Vector2i mousePosition, sf::Text& text);
-}
 
+	bool IsAllowSymbol(const sf::Event& event);
+}

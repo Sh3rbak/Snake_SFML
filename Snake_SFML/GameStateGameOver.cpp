@@ -8,26 +8,14 @@ namespace SnakeGame
 	{
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
-
-		auto setTextParametrs = [](sf::Text& text, const std::string title, sf::Font& font, int size,
-			sf::Color color = sf::Color::Transparent)
-			{
-				text.setString(title);
-				text.setFont(font);
-				text.setCharacterSize(size);
-				if (color != sf::Color::Transparent)
-				{
-					text.setFillColor(color);
-				}
-			};
-		
+				
 		if (game.isWinGame)
 		{
-			setTextParametrs(data.menu.rootItem.hintText, "YOU WIN", data.fontTitle, 200, sf::Color::Green);
+			SetTextParametrs(data.menu.rootItem.hintText, "YOU WIN", data.fontTitle, 200, sf::Color::Green);
 		}
 		else
 		{
-			setTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
+			SetTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
 		}
 
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
@@ -36,17 +24,19 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
 
-		setTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
-		setTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
+		SetTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
+		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.newGameItem);
 
-		setTextParametrs(data.finalScoreText, "Score:", data.font, 28);
-		setTextParametrs(data.recordsTableText, "Leaders:", data.font, 28);
+		SetTextParametrs(data.finalScoreText, "Score:", data.font, 28);
+		data.finalScoreText.setString("Score:  " + std::to_string(game.gameScore));
+
+		SetTextParametrs(data.recordsTableText, "Leaders:", data.font, 28);
 	}
 
-	void ShutdownGameStateGameOver(GameStateGameOverData& data)
+	void ShutdownGameStateGameOver(GameStateGameOverData& data, Game& game)
 	{
 		// No need to do anything here
 	}
@@ -95,23 +85,41 @@ namespace SnakeGame
 
 	void UpdateGameStateGameOver(GameStateGameOverData& data, Game& game)
 	{
-		data.finalScoreText.setString("Score:  " + std::to_string(game.gameScore));
+		if (data.isRunGameStateEnterNameData)
+		{
+			for (auto& record : game.recordsTable)
+			{
+				if (game.gameScore > record.second)
+				{
+					PushGameState(game, GameStateType::EnterName, true);
+					data.isRunGameStateEnterNameData = false;
+				}
+			}
+		}
 
 		if (game.recordsTable.empty())
 		{
 			data.recordsTableText.setString("Records: Empty");
 			return;
 		}
+
 		data.recordsTableText.setString("Records:");
-		int score = 0;
+		std::vector<std::pair<std::string, int>> recordTable;
 		for (const auto& it : game.recordsTable)
 		{
-			data.recordsTableText.setString(data.recordsTableText.getString() + "\n" + it.first + ":  " + std::to_string(it.second));
-			++score;
-			if (score >= 3)
-			{
-				break;
-			}
+			recordTable.push_back({it.first, it.second});
+		}
+		auto cmp = [](std::pair<std::string, int>& left, std::pair<std::string, int>& right)
+		{
+				return left.second > right.second;
+		};
+		std::sort(recordTable.begin(), recordTable.end(), cmp);
+		
+		for (int i = 0; i < RECORDS_TABLE_SIZE_IN_GAME_OVER; ++i)
+		{
+			std::string name = recordTable[i].first;
+			std::string score = std::to_string(recordTable[i].second);
+			data.recordsTableText.setString(data.recordsTableText.getString() + "\n" + name + ":  " + score);
 		}
 	}
 

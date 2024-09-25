@@ -21,6 +21,7 @@ namespace SnakeGame
 		Playing,
 		LeaderBoard,
 		GameOver,
+		EnterName,
 		Pause
 	};
 

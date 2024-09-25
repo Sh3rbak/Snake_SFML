@@ -39,4 +39,6 @@ namespace SnakeGame
 	MenuItem* GetCurrentMenuContext(Menu& menu);
 
 	void DrawMenu(Menu& menu, sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin);
+
+	void SetTextParametrs(sf::Text& itemText, const std::string title, sf::Font& font, const int size, sf::Color color = sf::Color::Transparent);
 }

@@ -119,4 +119,14 @@ namespace SnakeGame
 			expandedItem->childrenAlignment, position, origin);
 	}
 
+	void SetTextParametrs(sf::Text& itemText, const std::string title, sf::Font& font, const int size, sf::Color color)
+	{
+		itemText.setString(title);
+		itemText.setFont(font);
+		itemText.setCharacterSize(size);
+		if (color != sf::Color::Transparent)
+		{
+			itemText.setFillColor(color);
+		}
+	}
 }

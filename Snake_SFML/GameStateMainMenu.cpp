@@ -9,19 +9,7 @@ namespace SnakeGame
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-		auto setTextParametrs = [](sf::Text& text, const std::string title, sf::Font& font, const int size,
-			sf::Color color = sf::Color::Transparent)
-			{
-				text.setString(title);
-				text.setFont(font);
-				text.setCharacterSize(size);
-				if (color != sf::Color::Transparent)
-				{
-					text.setFillColor(color);
-				}
-			};
-
-		setTextParametrs(data.menu.rootItem.hintText, "SNAKE", data.fontTitle, 200, sf::Color::Green);
+		SetTextParametrs(data.menu.rootItem.hintText, "SNAKE", data.fontTitle, 200, sf::Color::Green);
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 10.f;
@@ -31,10 +19,10 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.leaderBoardItem);
 		data.menu.rootItem.children.push_back(&data.exitGameItem);
 
-		setTextParametrs(data.startGameItem.text, "Start Game", data.font, 36);
+		SetTextParametrs(data.startGameItem.text, "Start Game", data.font, 36);
 
-		setTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, 36);
-		setTextParametrs(data.gameDifficultyItem.hintText, "Difficulty", data.font, 48);
+		SetTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, 36);
+		SetTextParametrs(data.gameDifficultyItem.hintText, "Difficulty", data.font, 48);
 		data.gameDifficultyItem.childrenOrientation = Orientation::Vertical;
 		data.gameDifficultyItem.childrenAlignment = Alignment::Middle;
 		data.gameDifficultyItem.childrenSpacing = 20.f;
@@ -44,27 +32,27 @@ namespace SnakeGame
 		data.gameDifficultyItem.children.push_back(&data.hardItem);
 		data.gameDifficultyItem.children.push_back(&data.challengingItem);
 
-		setTextParametrs(data.beginnerItem.text, "Beginner", data.font, 36);
-		setTextParametrs(data.easyItem.text, "Easy", data.font, 36);
-		setTextParametrs(data.normalItem.text, "Normal", data.font, 36);
-		setTextParametrs(data.hardItem.text, "Hard", data.font, 36);
-		setTextParametrs(data.challengingItem.text, "Challenging", data.font, 36);
+		SetTextParametrs(data.beginnerItem.text, "Beginner", data.font, 36);
+		SetTextParametrs(data.easyItem.text, "Easy", data.font, 36);
+		SetTextParametrs(data.normalItem.text, "Normal", data.font, 36);
+		SetTextParametrs(data.hardItem.text, "Hard", data.font, 36);
+		SetTextParametrs(data.challengingItem.text, "Challenging", data.font, 36);
 
-		setTextParametrs(data.optionsItem.text, "Options", data.font, 36);
+		SetTextParametrs(data.optionsItem.text, "Options", data.font, 36);
 
 		
-		setTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, 36);
+		SetTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, 36);
 
-		setTextParametrs(data.exitGameItem.text, "Exit", data.font, 36);
-		setTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, 48, sf::Color::White);
+		SetTextParametrs(data.exitGameItem.text, "Exit", data.font, 36);
+		SetTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, 48, sf::Color::White);
 		data.exitGameItem.childrenOrientation = Orientation::Vertical;
 		data.exitGameItem.childrenAlignment = Alignment::Middle;
 		data.exitGameItem.childrenSpacing = 20.f;
 		data.exitGameItem.children.push_back(&data.noItem);
 		data.exitGameItem.children.push_back(&data.yesItem);
 
-		setTextParametrs(data.noItem.text, "No", data.font, 36);
-		setTextParametrs(data.yesItem.text, "Yes", data.font, 36);
+		SetTextParametrs(data.noItem.text, "No", data.font, 36);
+		SetTextParametrs(data.yesItem.text, "Yes", data.font, 36);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.startGameItem);
