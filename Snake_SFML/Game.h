@@ -68,5 +68,8 @@ namespace SnakeGame
 	void HandleWindowEventGameState(Game& game, GameState& state, sf::Event& event, sf::Vector2i mousePosition);
 	void UpdateGameState(Game& game, GameState& state, float deltaTime);
 	void DrawGameState(Game& game, GameState& state, sf::RenderWindow& window);
+
+	bool SerializeGame(const Game& game);
+	bool DeserializeGame(Game& game);
 }
 

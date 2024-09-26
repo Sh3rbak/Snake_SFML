@@ -8,7 +8,7 @@ namespace SnakeGame
 
 		ui.scoreText.setString("0");
 		ui.scoreText.setFont(ui.font);
-		ui.scoreText.setCharacterSize(static_cast<int>(FIELD_ON_TOP_SCREEN * 0.6));
+		ui.scoreText.setCharacterSize(CHARACTER_SIZE_SCORE);
 		ui.scoreText.setFillColor(sf::Color::White);
 		
 		ui.line.setSize({ SCREEN_WIDHT, 2.f });
@@ -18,7 +18,7 @@ namespace SnakeGame
 
 		ui.pauseButtonText.setString("||");
 		ui.pauseButtonText.setFont(ui.font);
-		ui.pauseButtonText.setCharacterSize(static_cast<int>(FIELD_ON_TOP_SCREEN * 0.6));
+		ui.pauseButtonText.setCharacterSize(CHARACTER_SIZE_SCORE);
 		ui.pauseButtonText.setFillColor(sf::Color::White);
 		ui.pauseButtonText.setOrigin(GetItemOrigin(ui.pauseButtonText, { 0.5f, 0.5f }));
 		ui.pauseButtonText.setPosition({ SCREEN_WIDHT - 30.f, static_cast<int>(FIELD_ON_TOP_SCREEN / 2.f) });

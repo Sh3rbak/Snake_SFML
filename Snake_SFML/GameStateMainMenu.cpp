@@ -9,7 +9,7 @@ namespace SnakeGame
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-		SetTextParametrs(data.menu.rootItem.hintText, "SNAKE", data.fontTitle, 200, sf::Color::Green);
+		SetTextParametrs(data.menu.rootItem.hintText, "SNAKE", data.fontTitle, CHARACTER_SIZE_CUSTOM_TITLE, sf::Color::Green);
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 10.f;
@@ -19,10 +19,10 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.leaderBoardItem);
 		data.menu.rootItem.children.push_back(&data.exitGameItem);
 
-		SetTextParametrs(data.startGameItem.text, "Start Game", data.font, 36);
+		SetTextParametrs(data.startGameItem.text, "Start Game", data.font, CHARACTER_SIZE_INIT_MENU);
 
-		SetTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, 36);
-		SetTextParametrs(data.gameDifficultyItem.hintText, "Difficulty", data.font, 48);
+		SetTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.gameDifficultyItem.hintText, "Difficulty", data.font, CHARACTER_SIZE_DEFAULT_TITLE);
 		data.gameDifficultyItem.childrenOrientation = Orientation::Vertical;
 		data.gameDifficultyItem.childrenAlignment = Alignment::Middle;
 		data.gameDifficultyItem.childrenSpacing = 20.f;
@@ -32,27 +32,38 @@ namespace SnakeGame
 		data.gameDifficultyItem.children.push_back(&data.hardItem);
 		data.gameDifficultyItem.children.push_back(&data.challengingItem);
 
-		SetTextParametrs(data.beginnerItem.text, "Beginner", data.font, 36);
-		SetTextParametrs(data.easyItem.text, "Easy", data.font, 36);
-		SetTextParametrs(data.normalItem.text, "Normal", data.font, 36);
-		SetTextParametrs(data.hardItem.text, "Hard", data.font, 36);
-		SetTextParametrs(data.challengingItem.text, "Challenging", data.font, 36);
+		SetTextParametrs(data.beginnerItem.text, "Beginner", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.easyItem.text, "Easy", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.normalItem.text, "Normal", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.hardItem.text, "Hard", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.challengingItem.text, "Challenging", data.font, CHARACTER_SIZE_INIT_MENU);
 
-		SetTextParametrs(data.optionsItem.text, "Options", data.font, 36);
+		SetTextParametrs(data.optionsItem.text, "Options", data.font, CHARACTER_SIZE_INIT_MENU);
+		/*data.optionsItem.childrenOrientation = Orientation::Vertical;
+		data.optionsItem.childrenAlignment = Alignment::Middle;
+		data.optionsItem.childrenSpacing = 20.f;*/
 
-		
-		SetTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, 36);
+		SetTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, CHARACTER_SIZE_INIT_MENU);
+		/*SetTextParametrs(data.leaderBoardItem.hintText, "Leader Board", data.font, CHARACTER_SIZE_DEFAULT_TITLE);
+		data.leaderBoardItem.childrenOrientation = Orientation::Vertical;
+		data.leaderBoardItem.childrenAlignment = Alignment::Middle;
+		data.leaderBoardItem.childrenSpacing = 20.f;
+		data.leaderBoardItem.children.push_back(&data.backFromLeaberBoardItem);*/
 
-		SetTextParametrs(data.exitGameItem.text, "Exit", data.font, 36);
-		SetTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, 48, sf::Color::White);
+		/*SetTextParametrs(data.backFromLeaberBoardItem.text, "Back", data.font, CHARACTER_SIZE_INIT_MENU);*/
+
+
+		SetTextParametrs(data.exitGameItem.text, "Exit", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, CHARACTER_SIZE_DEFAULT_TITLE, sf::Color::White);
 		data.exitGameItem.childrenOrientation = Orientation::Vertical;
 		data.exitGameItem.childrenAlignment = Alignment::Middle;
 		data.exitGameItem.childrenSpacing = 20.f;
 		data.exitGameItem.children.push_back(&data.noItem);
 		data.exitGameItem.children.push_back(&data.yesItem);
 
-		SetTextParametrs(data.noItem.text, "No", data.font, 36);
-		SetTextParametrs(data.yesItem.text, "Yes", data.font, 36);
+		SetTextParametrs(data.noItem.text, "No", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.yesItem.text, "Yes", data.font, CHARACTER_SIZE_INIT_MENU);
+
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.startGameItem);
@@ -95,15 +106,19 @@ namespace SnakeGame
 				SelectNextMenuItem(data.menu);
 			}
 		}
+		
 		MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
 		for (auto& child : expandedItem->children)
 		{
 			if (IsMouseOnText(mousePosition, child->text))
 			{
 				SelectMenuItem(data.menu, child);
-				if (event.key.code == sf::Mouse::Left)
+				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					RunSelectedItem(data, game);
+					if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						RunSelectedItem(data, game);
+					}
 				}
 			}
 		}
@@ -154,6 +169,10 @@ namespace SnakeGame
 		else if (data.menu.selectedItem == &data.challengingItem)
 		{
 			game.difficulty = GameDifficulty::Challenge;
+		}
+		else if (data.menu.selectedItem == &data.leaderBoardItem)
+		{
+			
 		}
 		else if (data.menu.selectedItem == &data.exitGameItem)
 		{

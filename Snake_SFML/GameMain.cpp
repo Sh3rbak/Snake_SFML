@@ -44,5 +44,7 @@ int main()
 
 	}
 	
+	ShutdownGame(*game);
+
 	return 0;
 }

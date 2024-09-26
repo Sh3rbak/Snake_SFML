@@ -9,7 +9,7 @@ namespace SnakeGame
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-		SetTextParametrs(data.menu.rootItem.hintText, "PAUSE", data.fontTitle, 200, sf::Color::Red);
+		SetTextParametrs(data.menu.rootItem.hintText, "PAUSE", data.fontTitle, CHARACTER_SIZE_CUSTOM_TITLE, sf::Color::Red);
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 20.f;
@@ -17,9 +17,9 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
 
-		SetTextParametrs(data.continueItem.text, "Continue", data.font, 36);
-		SetTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
-		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
+		SetTextParametrs(data.continueItem.text, "Continue", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.newGameItem.text, "New Game", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.continueItem);
@@ -69,9 +69,12 @@ namespace SnakeGame
 			if (IsMouseOnText(mousePosition, child->text))
 			{
 				SelectMenuItem(data.menu, child);
-				if (event.key.code == sf::Mouse::Left)
+				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					RunSelectedItem(data, game);
+					if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						RunSelectedItem(data, game);
+					}
 				}
 			}
 		}

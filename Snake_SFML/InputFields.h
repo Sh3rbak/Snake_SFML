@@ -13,10 +13,10 @@ namespace SnakeGame
 
 	struct InputFields
 	{
-		std::vector<LetterInputField*> fields;
+		std::vector<LetterInputField> fields;
 	};
 	
-	void InitInputFields(InputFields& fields, sf::Font& font);
+	void InitInputFields(InputFields& fields, sf::Font& font, std::vector<char> standartName);
 	void UpdateInputFields(InputFields& fields, std::vector<char> newName);
-	void DrawInputFields(InputFields& fields, sf::RenderWindow& window, const Position positionCenterField);
+	void DrawInputFields(InputFields& fields, sf::RenderWindow& window, const Position positionMindleField);
 }

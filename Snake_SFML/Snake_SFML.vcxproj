@@ -140,6 +140,7 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameStateEnterName.cpp" />
     <ClCompile Include="GameStateGameOver.cpp" />
+    <ClCompile Include="GameStateLeaderBoard.cpp" />
     <ClCompile Include="GameStateMainMenu.cpp" />
     <ClCompile Include="GameStatePause.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GameStateEnterName.h" />
     <ClInclude Include="GameStateGameOver.h" />
+    <ClInclude Include="GameStateLeaderBoard.h" />
     <ClInclude Include="GameStateMainMenu.h" />
     <ClInclude Include="GameStatePause.h" />
     <ClInclude Include="GameStatePlaying.h" />

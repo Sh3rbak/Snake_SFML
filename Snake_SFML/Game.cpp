@@ -4,20 +4,15 @@
 #include "GameStateGameOver.h"
 #include "GameStateEnterName.h"
 #include "GameStatePause.h"
+#include "GameStateLeaderBoard.h"
 #include <cassert>
+#include <fstream>
 
 namespace SnakeGame
 {
 	void InitGame(Game& game)
 	{
-		game.recordsTable =
-		{
-			{ "Jonny", 8 },
-			{ "Grace", 6 },
-			{ "Bella", 4 },
-			{ "Alice", 2 },
-			{ "Lucas", 1 }
-		};
+		DeserializeGame(game);
 
 		game.gameStateChangeType = GameStateChangeType::None;
 		game.pendingGameStateType = GameStateType::None;
@@ -148,6 +143,8 @@ namespace SnakeGame
 			InitGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
+			state.data = std::make_shared<GameStateLeaderBoardData>();
+			InitGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			state.data = std::make_shared<GameStateGameOverData>();
@@ -178,6 +175,7 @@ namespace SnakeGame
 			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
+			ShutdownGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
@@ -205,6 +203,7 @@ namespace SnakeGame
 			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event, mousePosition);
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
+			HandleGameStateLeaderBoardWindowEvent(*(GameStateLeaderBoardData*)state.data.get(), game, event, mousePosition);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event, mousePosition);
@@ -232,6 +231,7 @@ namespace SnakeGame
 			UpdateGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, deltaTime);
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
+			UpdateGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
@@ -259,6 +259,7 @@ namespace SnakeGame
 			DrawGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, window);
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
+			DrawGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game, window);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game, window);
@@ -273,5 +274,35 @@ namespace SnakeGame
 			assert(false);
 			break;
 		}
+	}
+	bool SerializeGame(const Game& game)
+	{
+		std::ofstream file(RECORDS_PATH + "RECORDS_TABLE_FILE");
+		if (file.is_open())
+		{
+			for (const auto& record : game.recordsTable)
+			{
+				file << record.first << " " << record.second << std::endl;
+			}
+			file.close();
+			return true;
+		}
+		return false;
+	}
+	bool DeserializeGame(Game& game)
+	{
+		std::ifstream file(RECORDS_PATH + "RECORDS_TABLE_FILE");
+		if (file.is_open())
+		{
+			std::string name;
+			int score;
+			while (file >> name >> score)
+			{
+				game.recordsTable[name] = score;
+			}
+			file.close();
+			return true;
+		}
+		return false;
 	}
 }

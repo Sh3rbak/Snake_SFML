@@ -1,6 +1,7 @@
 #include "GameStateEnterName.h"
 #include "Game.h"
 #include <cassert>
+#include <string>
 
 namespace SnakeGame
 {
@@ -8,19 +9,20 @@ namespace SnakeGame
     {
         assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-        SetTextParametrs(data.menu.rootItem.hintText, "New record! Are you want to enter name?", data.font, 28, sf::Color::White);
+        SetTextParametrs(data.menu.rootItem.hintText, "New record! Are you want to enter name?", 
+            data.font, CHARACTER_SIZE_LONG_TITLE, sf::Color::White);
         data.menu.rootItem.childrenOrientation = Orientation::Vertical;
         data.menu.rootItem.childrenAlignment = Alignment::Middle;
         data.menu.rootItem.childrenSpacing = 20.f;
         data.menu.rootItem.children.push_back(&data.noItem);
         data.menu.rootItem.children.push_back(&data.yesItme);
 
-        SetTextParametrs(data.noItem.text, "No", data.font, 36);
-        SetTextParametrs(data.yesItme.text, "Yes", data.font, 36);
-        SetTextParametrs(data.yesItme.hintText, "Enter name", data.font, 36, sf::Color::White);
+        SetTextParametrs(data.noItem.text, "No", data.font, CHARACTER_SIZE_INIT_MENU);
+        SetTextParametrs(data.yesItme.text, "Yes", data.font, CHARACTER_SIZE_INIT_MENU);
+        SetTextParametrs(data.yesItme.hintText, "Enter name", data.font, CHARACTER_SIZE_DEFAULT_TITLE, sf::Color::White);
         data.yesItme.children.push_back(&data.enterItem);
 
-        SetTextParametrs(data.enterItem.text, "Enter", data.font, 36);
+        SetTextParametrs(data.enterItem.text, "Enter", data.font, CHARACTER_SIZE_INIT_MENU);
 
         InitMenuItem(data.menu.rootItem);
         SelectMenuItem(data.menu, &data.noItem);
@@ -30,8 +32,8 @@ namespace SnakeGame
         data.inputLetters.push_back('Y');
         data.inputLetters.push_back('Z');
 
-        InitInputFields(data.inputFields, data.font);
-
+        InitInputFields(data.inputFields, data.font, data.inputLetters);
+        
         for (auto& it : game.recordsTable)
         {
             data.newRecordsTable.push_back({ it.first, it.second });
@@ -45,6 +47,7 @@ namespace SnakeGame
             data.newName.push_back(it);
         }
         data.newRecordsTable.push_back({ data.newName, game.gameScore });
+
         auto cmp = [](std::pair<std::string, int>& left, std::pair<std::string, int>& right)
             {
                 return left.second > right.second;
@@ -56,15 +59,17 @@ namespace SnakeGame
         int score = 0;
         for (auto& it : data.newRecordsTable)
         {
-            recordsTable[it.first] = it.second;
-            ++score;
             if (score > MAX_RECORDS_TABLE_SIZE)
             {
                 break;
             }
+            recordsTable[it.first] = it.second;
+            ++score;
         }
 
         game.recordsTable = recordsTable;
+
+        SerializeGame(game);
     }
 
     void HandleGameStateEnterNameWindowEvent(GameStateEnterNameData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition)
@@ -76,7 +81,7 @@ namespace SnakeGame
 
         if (data.menu.selectedItem == &data.enterItem)
         {
-            if (!data.isClearedDefaultName && event.type == sf::Event::TextEntered)
+            if (!data.isClearedDefaultName && IsAllowSymbol(event))
             {
                 data.inputLetters.clear();
                 data.isClearedDefaultName = true;
@@ -84,14 +89,14 @@ namespace SnakeGame
 
             if (event.type == sf::Event::TextEntered)
             {
-                if (IsAllowSymbol(event) && data.inputLetters.size() <= MAX_SYMBOLS_IN_NAME)
+                if (IsAllowSymbol(event) && data.inputLetters.size() < MAX_SYMBOLS_IN_NAME)
                 {
                     data.inputLetters.push_back(toupper(static_cast<char>(event.text.unicode)));
                 }
             }
             if (event.type == sf::Event::KeyPressed)
             {
-                if (event.key.code == sf::Keyboard::BackSpace)
+                if (event.key.code == sf::Keyboard::BackSpace && !data.inputLetters.empty())
                 {
                     data.inputLetters.pop_back();
                 }
@@ -125,9 +130,12 @@ namespace SnakeGame
             if (IsMouseOnText(mousePosition, child->text))
             {
                 SelectMenuItem(data.menu, child);
-                if (event.key.code == sf::Mouse::Left)
+                if (event.type == sf::Event::MouseButtonReleased)
                 {
-                    RunSelectedItem(data, game);
+                    if (event.mouseButton.button == sf::Mouse::Left)
+                    {
+                        RunSelectedItem(data, game);
+                    }
                 }
             }
         }
@@ -147,11 +155,14 @@ namespace SnakeGame
 
         sf::Text* hintText = &GetCurrentMenuContext(data.menu)->hintText;
         hintText->setOrigin(GetItemOrigin(*hintText, { 0.5f, 0.f }));
-        hintText->setPosition(viewSize.x / 2.f, 50.f);
+        hintText->setPosition(viewSize.x / 2.f, viewSize.y / 5.f);
         window.draw(*hintText);
 
         DrawMenu(data.menu, window, { viewSize.x / 2.f, viewSize.y * (4.f / 5.f) }, { 0.5f, 0.f });
-        DrawInputFields(data.inputFields, window, viewSize / 2.f);
+        if (data.menu.selectedItem == &data.enterItem)
+        {
+            DrawInputFields(data.inputFields, window, viewSize / 2.f);
+        }
     }
 
     void RunSelectedItem(GameStateEnterNameData& data, Game& game)

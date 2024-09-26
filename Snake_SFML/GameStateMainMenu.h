@@ -12,13 +12,16 @@ namespace SnakeGame
 
 		MenuItem startGameItem;
 		MenuItem gameDifficultyItem;
+		MenuItem backFromDifficultyItem;
 		MenuItem beginnerItem;
 		MenuItem easyItem;
 		MenuItem normalItem;
 		MenuItem hardItem;
 		MenuItem challengingItem;
 		MenuItem optionsItem;
+		MenuItem backFromOptionsItem;
 		MenuItem leaderBoardItem;
+		MenuItem backFromLeaberBoardItem;
 		MenuItem exitGameItem;
 		MenuItem noItem;
 		MenuItem yesItem;

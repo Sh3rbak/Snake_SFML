@@ -11,11 +11,11 @@ namespace SnakeGame
 				
 		if (game.isWinGame)
 		{
-			SetTextParametrs(data.menu.rootItem.hintText, "YOU WIN", data.fontTitle, 200, sf::Color::Green);
+			SetTextParametrs(data.menu.rootItem.hintText, "YOU WIN", data.fontTitle, CHARACTER_SIZE_CUSTOM_TITLE, sf::Color::Green);
 		}
 		else
 		{
-			SetTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, 200, sf::Color::Red);
+			SetTextParametrs(data.menu.rootItem.hintText, "GAME OVER", data.fontTitle, CHARACTER_SIZE_CUSTOM_TITLE, sf::Color::Red);
 		}
 
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
@@ -24,16 +24,16 @@ namespace SnakeGame
 		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
 
-		SetTextParametrs(data.newGameItem.text, "New Game", data.font, 36);
-		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, 36);
+		SetTextParametrs(data.newGameItem.text, "New Game", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.newGameItem);
 
-		SetTextParametrs(data.finalScoreText, "Score:", data.font, 28);
+		SetTextParametrs(data.finalScoreText, "Score:", data.font, CHARACTER_SIZE_INIT_MENU);
 		data.finalScoreText.setString("Score:  " + std::to_string(game.gameScore));
 
-		SetTextParametrs(data.recordsTableText, "Leaders:", data.font, 28);
+		SetTextParametrs(data.recordsTableText, "Leaders:", data.font, CHARACTER_SIZE_INIT_MENU);
 	}
 
 	void ShutdownGameStateGameOver(GameStateGameOverData& data, Game& game)
@@ -75,9 +75,12 @@ namespace SnakeGame
 			if (IsMouseOnText(mousePosition, child->text))
 			{
 				SelectMenuItem(data.menu, child);
-				if (event.key.code == sf::Mouse::Left)
+				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					RunSelectedItem(data, game);
+					if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						RunSelectedItem(data, game);
+					}
 				}
 			}
 		}
@@ -87,6 +90,12 @@ namespace SnakeGame
 	{
 		if (data.isRunGameStateEnterNameData)
 		{
+			if (game.recordsTable.empty())
+			{
+				PushGameState(game, GameStateType::EnterName, true);
+				data.isRunGameStateEnterNameData = false;
+			}
+
 			for (auto& record : game.recordsTable)
 			{
 				if (game.gameScore > record.second)
@@ -115,8 +124,9 @@ namespace SnakeGame
 		};
 		std::sort(recordTable.begin(), recordTable.end(), cmp);
 		
-		for (int i = 0; i < RECORDS_TABLE_SIZE_IN_GAME_OVER; ++i)
+		for (int i = 0; i < game.recordsTable.size() && i < RECORDS_TABLE_SIZE_IN_GAME_OVER; ++i)
 		{
+
 			std::string name = recordTable[i].first;
 			std::string score = std::to_string(recordTable[i].second);
 			data.recordsTableText.setString(data.recordsTableText.getString() + "\n" + name + ":  " + score);
