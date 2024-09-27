@@ -43,6 +43,7 @@ namespace SnakeGame
 
 	bool SelectPreviousMenuItem(Menu& menu)
 	{
+		
 		if (menu.selectedItem)
 		{
 			MenuItem* parent = menu.selectedItem->parent;
@@ -82,7 +83,6 @@ namespace SnakeGame
 			SelectMenuItem(menu, menu.selectedItem->children.front());
 			return true;
 		}
-
 		return false;
 	}
 
@@ -128,5 +128,21 @@ namespace SnakeGame
 		{
 			itemText.setFillColor(color);
 		}
+	}
+
+	void PlayEnterSoundMenu(Menu& menu)
+	{
+		assert(menu.buffer.loadFromFile(RESOURCES_PATH + "Sound/Timgormly_Enter.wav"));
+		menu.enterSound.setBuffer(menu.buffer);
+		menu.enterSound.setVolume(SOUND_VOLUME);
+		menu.enterSound.play();
+	}
+
+	void PlayHoverSoundMenu(Menu& menu)
+	{
+		assert(menu.buffer.loadFromFile(RESOURCES_PATH + "Sound/Theevilsocks__menu-hover.wav"));
+		menu.hoverSound.setBuffer(menu.buffer);
+		menu.hoverSound.setVolume(SOUND_VOLUME);
+		menu.hoverSound.play();
 	}
 }

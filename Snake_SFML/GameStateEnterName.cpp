@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <cassert>
 #include <string>
+#include <unordered_map>
 
 namespace SnakeGame
 {
@@ -9,7 +10,7 @@ namespace SnakeGame
     {
         assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
-        SetTextParametrs(data.menu.rootItem.hintText, "New record! Are you want to enter name?", 
+        SetTextParametrs(data.menu.rootItem.hintText, "Are you want to enter name?", 
             data.font, CHARACTER_SIZE_LONG_TITLE, sf::Color::White);
         data.menu.rootItem.childrenOrientation = Orientation::Vertical;
         data.menu.rootItem.childrenAlignment = Alignment::Middle;
@@ -58,12 +59,13 @@ namespace SnakeGame
 
         int score = 0;
         for (auto& it : data.newRecordsTable)
+        for (auto it = data.newRecordsTable.rbegin(); it != data.newRecordsTable.rend(); ++it)
         {
             if (score > MAX_RECORDS_TABLE_SIZE)
             {
                 break;
             }
-            recordsTable[it.first] = it.second;
+            recordsTable[it->first] = it->second;
             ++score;
         }
 
@@ -105,7 +107,12 @@ namespace SnakeGame
 
         if (event.type == sf::Event::KeyPressed)
         {
-            if (event.key.code == sf::Keyboard::Enter)
+            if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
+            {
+                CollapseSelectedItem(data.menu);
+                PlayEnterSoundMenu(data.menu);
+            }
+            else if (event.key.code == sf::Keyboard::Enter)
             {
                 RunSelectedItem(data, game);
             }
@@ -116,20 +123,27 @@ namespace SnakeGame
                 event.key.code == sf::Keyboard::W)
             {
                 SelectPreviousMenuItem(data.menu);
+                PlayHoverSoundMenu(data.menu);
             }
             else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
                 orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
                 event.key.code == sf::Keyboard::S)
             {
                 SelectNextMenuItem(data.menu);
+                PlayHoverSoundMenu(data.menu);
             }
         }
+
         MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
         for (auto& child : expandedItem->children)
         {
             if (IsMouseOnText(mousePosition, child->text))
             {
-                SelectMenuItem(data.menu, child);
+                if (data.menu.selectedItem != child)
+                {
+                    SelectMenuItem(data.menu, child);
+                    PlayHoverSoundMenu(data.menu);
+                }
                 if (event.type == sf::Event::MouseButtonReleased)
                 {
                     if (event.mouseButton.button == sf::Mouse::Left)
@@ -167,6 +181,7 @@ namespace SnakeGame
 
     void RunSelectedItem(GameStateEnterNameData& data, Game& game)
     {
+        PlayEnterSoundMenu(data.menu);
         if (data.menu.selectedItem == &data.noItem)
         {
             PopGameState(game);

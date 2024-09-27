@@ -142,6 +142,7 @@
     <ClCompile Include="GameStateGameOver.cpp" />
     <ClCompile Include="GameStateLeaderBoard.cpp" />
     <ClCompile Include="GameStateMainMenu.cpp" />
+    <ClCompile Include="GameStateOptions.cpp" />
     <ClCompile Include="GameStatePause.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="InputFields.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="GameStateGameOver.h" />
     <ClInclude Include="GameStateLeaderBoard.h" />
     <ClInclude Include="GameStateMainMenu.h" />
+    <ClInclude Include="GameStateOptions.h" />
     <ClInclude Include="GameStatePause.h" />
     <ClInclude Include="GameStatePlaying.h" />
     <ClInclude Include="InputFields.h" />

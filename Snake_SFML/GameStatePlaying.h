@@ -1,5 +1,6 @@
 #pragma once
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Apple.h"
 #include "Snake.h"
 #include "Fence.h"
@@ -36,6 +37,11 @@ namespace SnakeGame
 
 		sf::Font font;
 		UI ui;
+
+		sf::Music backgroundMusic;
+
+		sf::SoundBuffer buffer;
+		sf::Sound hitSound;
 	};
 
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game);

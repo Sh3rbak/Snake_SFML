@@ -2,7 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include "Menu.h"
 #include "InputFields.h"
-#include <unordered_map>
 
 namespace SnakeGame
 {

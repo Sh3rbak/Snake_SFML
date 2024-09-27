@@ -41,9 +41,10 @@ namespace SnakeGame
 
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape)
+			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
 			{
-				PopGameState(game);
+				CollapseSelectedItem(data.menu);
+				PlayEnterSoundMenu(data.menu);
 			}
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
@@ -52,14 +53,18 @@ namespace SnakeGame
 
 			Orientation orientation = data.menu.selectedItem->parent->childrenOrientation;
 			if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Up ||
-				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Left)
+				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Left ||
+				event.key.code == sf::Keyboard::W)
 			{
 				SelectPreviousMenuItem(data.menu);
+				PlayHoverSoundMenu(data.menu);
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
-				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right)
+				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
+				event.key.code == sf::Keyboard::S)
 			{
 				SelectNextMenuItem(data.menu);
+				PlayHoverSoundMenu(data.menu);
 			}
 		}
 
@@ -68,7 +73,11 @@ namespace SnakeGame
 		{
 			if (IsMouseOnText(mousePosition, child->text))
 			{
-				SelectMenuItem(data.menu, child);
+				if (data.menu.selectedItem != child)
+				{
+					SelectMenuItem(data.menu, child);
+					PlayHoverSoundMenu(data.menu);
+				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
 					if (event.mouseButton.button == sf::Mouse::Left)
@@ -101,6 +110,7 @@ namespace SnakeGame
 
 	void RunSelectedItem(GameStatePauseData& data, Game& game)
 	{
+		PlayEnterSoundMenu(data.menu);
 		if (data.menu.selectedItem == &data.continueItem)
 		{
 			PopGameState(game);

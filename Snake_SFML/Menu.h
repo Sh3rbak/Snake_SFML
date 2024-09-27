@@ -1,5 +1,7 @@
 #pragma once
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include "GameSettings.h"
 #include "Math.h"
 #include <list>
 
@@ -26,6 +28,11 @@ namespace SnakeGame
 	{
 		MenuItem rootItem;
 		MenuItem* selectedItem = nullptr;
+
+		sf::SoundBuffer buffer;
+
+		sf::Sound hoverSound;
+		sf::Sound enterSound;
 	};
 
 	// Links children to parent
@@ -41,4 +48,7 @@ namespace SnakeGame
 	void DrawMenu(Menu& menu, sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin);
 
 	void SetTextParametrs(sf::Text& itemText, const std::string title, sf::Font& font, const int size, sf::Color color = sf::Color::Transparent);
+	
+	void PlayEnterSoundMenu(Menu& menu);
+	void PlayHoverSoundMenu(Menu& menu);
 }

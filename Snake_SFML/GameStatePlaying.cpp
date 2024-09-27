@@ -88,6 +88,9 @@ namespace SnakeGame
 		assert(data.fenceTexture.loadFromFile(RESOURCES_PATH + "Textures/fence.png", sf::IntRect(8, 0, 8, 8)));
 		assert(data.fenceInCornerTexture.loadFromFile(RESOURCES_PATH + "Textures/fence.png", sf::IntRect(0, 0, 8, 8)));
 
+		assert(data.backgroundMusic.openFromFile(RESOURCES_PATH + "Sound/Clinthammer__Background_Music.wav"));
+		assert(data.buffer.loadFromFile(RESOURCES_PATH + "Sound/Owlstorm__Snake_hit.wav"));
+
 		InitGameGrid(data.gameGrid);
 		InitSnakeHead(data.snake, data.headSnakeTexture);
 		InitApple(data.apple, data.appleTexture);
@@ -110,6 +113,13 @@ namespace SnakeGame
 		}
 		SetApplePosition(data.apple, randomCell->position);
 		ChangeTypeCell(*randomCell, GameItemType::Apple);
+
+		data.backgroundMusic.setLoop(true);
+		data.backgroundMusic.setVolume(MUSIC_VOLUME);
+		data.backgroundMusic.play();
+
+		data.hitSound.setBuffer(data.buffer);
+		data.hitSound.setVolume(SOUND_VOLUME);
 	}
 
 	void ShutdownGameStatePlaying(GameStatePlayingData& data)
@@ -275,6 +285,7 @@ namespace SnakeGame
 					PushPartOfBody(data.snake, data.bodySnakeTexture);
 				}
 				data.numEatenApples += data.pointPerApple;
+				data.hitSound.play();
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:

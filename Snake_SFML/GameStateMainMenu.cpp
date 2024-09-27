@@ -12,7 +12,7 @@ namespace SnakeGame
 		SetTextParametrs(data.menu.rootItem.hintText, "SNAKE", data.fontTitle, CHARACTER_SIZE_CUSTOM_TITLE, sf::Color::Green);
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
-		data.menu.rootItem.childrenSpacing = 10.f;
+		data.menu.rootItem.childrenSpacing = 20.f;
 		data.menu.rootItem.children.push_back(&data.startGameItem);
 		data.menu.rootItem.children.push_back(&data.gameDifficultyItem);
 		data.menu.rootItem.children.push_back(&data.optionsItem);
@@ -39,19 +39,8 @@ namespace SnakeGame
 		SetTextParametrs(data.challengingItem.text, "Challenging", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		SetTextParametrs(data.optionsItem.text, "Options", data.font, CHARACTER_SIZE_INIT_MENU);
-		/*data.optionsItem.childrenOrientation = Orientation::Vertical;
-		data.optionsItem.childrenAlignment = Alignment::Middle;
-		data.optionsItem.childrenSpacing = 20.f;*/
 
 		SetTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, CHARACTER_SIZE_INIT_MENU);
-		/*SetTextParametrs(data.leaderBoardItem.hintText, "Leader Board", data.font, CHARACTER_SIZE_DEFAULT_TITLE);
-		data.leaderBoardItem.childrenOrientation = Orientation::Vertical;
-		data.leaderBoardItem.childrenAlignment = Alignment::Middle;
-		data.leaderBoardItem.childrenSpacing = 20.f;
-		data.leaderBoardItem.children.push_back(&data.backFromLeaberBoardItem);*/
-
-		/*SetTextParametrs(data.backFromLeaberBoardItem.text, "Back", data.font, CHARACTER_SIZE_INIT_MENU);*/
-
 
 		SetTextParametrs(data.exitGameItem.text, "Exit", data.font, CHARACTER_SIZE_INIT_MENU);
 		SetTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, CHARACTER_SIZE_DEFAULT_TITLE, sf::Color::White);
@@ -86,6 +75,7 @@ namespace SnakeGame
 			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
 			{
 				CollapseSelectedItem(data.menu);
+				PlayEnterSoundMenu(data.menu);
 			} 
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
@@ -98,12 +88,14 @@ namespace SnakeGame
 				event.key.code == sf::Keyboard::W)
 			{
 				SelectPreviousMenuItem(data.menu);
+				PlayHoverSoundMenu(data.menu);
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
 				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
 				event.key.code == sf::Keyboard::S)
 			{
 				SelectNextMenuItem(data.menu);
+				PlayHoverSoundMenu(data.menu);
 			}
 		}
 		
@@ -112,7 +104,11 @@ namespace SnakeGame
 		{
 			if (IsMouseOnText(mousePosition, child->text))
 			{
-				SelectMenuItem(data.menu, child);
+				if (data.menu.selectedItem != child)
+				{
+					SelectMenuItem(data.menu, child);
+					PlayHoverSoundMenu(data.menu);
+				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
 					if (event.mouseButton.button == sf::Mouse::Left)
@@ -126,6 +122,7 @@ namespace SnakeGame
 
 	void UpdateGameStateMainMenu(GameStateMainMenuData& data, Game& game)
 	{
+		// No need to do anything here
 	}
 
 	void DrawGameStateMainMenu(GameStateMainMenuData& data, Game& game, sf::RenderWindow& window)
@@ -142,6 +139,7 @@ namespace SnakeGame
 
 	void RunSelectedItem(GameStateMainMenuData& data, Game& game)
 	{
+		PlayEnterSoundMenu(data.menu);
 		if (data.menu.selectedItem == &data.startGameItem)
 		{
 			SwitchGameState(game, GameStateType::Playing);
@@ -172,7 +170,7 @@ namespace SnakeGame
 		}
 		else if (data.menu.selectedItem == &data.leaderBoardItem)
 		{
-			
+			PushGameState(game, GameStateType::LeaderBoard, true);
 		}
 		else if (data.menu.selectedItem == &data.exitGameItem)
 		{

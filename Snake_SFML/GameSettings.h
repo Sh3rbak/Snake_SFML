@@ -10,6 +10,9 @@ namespace SnakeGame
 	const int SCREEN_HEIGHT = 768;
 	const int FIELD_ON_TOP_SCREEN = static_cast<int>(SCREEN_HEIGHT / 15.f);
 
+	const float SOUND_VOLUME = 50.f;
+	const float MUSIC_VOLUME = 50.f;
+
 	const float SNAKE_SIZE = 20.f;
 	const float APPLE_SIZE = 20.f;
 
