@@ -15,17 +15,14 @@ namespace SnakeGame
 		data.menu.rootItem.childrenSpacing = 20.f;
 		data.menu.rootItem.children.push_back(&data.startGameItem);
 		data.menu.rootItem.children.push_back(&data.gameDifficultyItem);
-		data.menu.rootItem.children.push_back(&data.optionsItem);
 		data.menu.rootItem.children.push_back(&data.leaderBoardItem);
+		data.menu.rootItem.children.push_back(&data.optionsItem);
 		data.menu.rootItem.children.push_back(&data.exitGameItem);
 
 		SetTextParametrs(data.startGameItem.text, "Start Game", data.font, CHARACTER_SIZE_INIT_MENU);
-
 		SetTextParametrs(data.gameDifficultyItem.text, "Difficulty", data.font, CHARACTER_SIZE_INIT_MENU);
-		
-		SetTextParametrs(data.optionsItem.text, "Options", data.font, CHARACTER_SIZE_INIT_MENU);
-
 		SetTextParametrs(data.leaderBoardItem.text, "Leader Board", data.font, CHARACTER_SIZE_INIT_MENU);
+		SetTextParametrs(data.optionsItem.text, "Options", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		SetTextParametrs(data.exitGameItem.text, "Exit", data.font, CHARACTER_SIZE_INIT_MENU);
 		SetTextParametrs(data.exitGameItem.hintText, "Are you sure you want to exist?", data.font, CHARACTER_SIZE_DEFAULT_TITLE, sf::Color::White);

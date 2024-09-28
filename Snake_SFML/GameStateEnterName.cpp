@@ -58,10 +58,9 @@ namespace SnakeGame
         std::unordered_map<std::string, int> recordsTable;
 
         int score = 0;
-        for (auto& it : data.newRecordsTable)
         for (auto it = data.newRecordsTable.rbegin(); it != data.newRecordsTable.rend(); ++it)
         {
-            if (score > MAX_RECORDS_TABLE_SIZE)
+            if (score > RECORDS_TABLE_SIZE_IN_LEADER_BOARD)
             {
                 break;
             }

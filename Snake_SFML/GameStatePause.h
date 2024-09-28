@@ -12,7 +12,6 @@ namespace SnakeGame
 		sf::Font font;
 
 		MenuItem continueItem;
-		MenuItem newGameItem;
 		MenuItem goToMenuItem;
 		Menu menu;
 

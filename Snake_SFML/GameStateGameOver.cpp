@@ -21,11 +21,11 @@ namespace SnakeGame
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 30.f;
-		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
+		data.menu.rootItem.children.push_back(&data.newGameItem);
 
+		SetTextParametrs(data.goToMenuItem.text, "Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 		SetTextParametrs(data.newGameItem.text, "New Game", data.font, CHARACTER_SIZE_INIT_MENU);
-		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.newGameItem);
@@ -154,24 +154,24 @@ namespace SnakeGame
 		DrawMenu(data.menu, window, {viewSize.x / 2.f, viewSize.y * (4.f / 5.f)}, {0.5f, 0.f});
 
 		data.finalScoreText.setOrigin(GetItemOrigin(data.finalScoreText, { 0.5f, 0.5f }));
-		data.finalScoreText.setPosition(viewSize.x / 4.f, viewSize.y / 2.f);
+		data.finalScoreText.setPosition(viewSize.x / 4.f, viewSize.y * 3.f / 5.f);
 		window.draw(data.finalScoreText);
 
 		data.recordsTableText.setOrigin(GetItemOrigin(data.recordsTableText, { 0.5f, 0.5f }));
-		data.recordsTableText.setPosition(viewSize.x / 4.f * 3.f, viewSize.y / 2.f);
+		data.recordsTableText.setPosition(viewSize.x / 4.f * 3.f, viewSize.y * 3.f / 5.f);
 		window.draw(data.recordsTableText);
 	}
 
 	void RunSelectedItem(GameStateGameOverData& data, Game& game)
 	{
 		PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
-		if (data.menu.selectedItem == &data.goToMenuItem)
-		{
-			SwitchGameState(game, GameStateType::MainMenu);
-		}
-		else if (data.menu.selectedItem == &data.newGameItem)
+		if (data.menu.selectedItem == &data.newGameItem)
 		{
 			SwitchGameState(game, GameStateType::Playing);
+		}
+		else if (data.menu.selectedItem == &data.goToMenuItem)
+		{
+			SwitchGameState(game, GameStateType::MainMenu);
 		}
 	}
 }

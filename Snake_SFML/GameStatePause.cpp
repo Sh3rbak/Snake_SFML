@@ -13,13 +13,11 @@ namespace SnakeGame
 		data.menu.rootItem.childrenOrientation = Orientation::Vertical;
 		data.menu.rootItem.childrenAlignment = Alignment::Middle;
 		data.menu.rootItem.childrenSpacing = 20.f;
-		data.menu.rootItem.children.push_back(&data.continueItem);
-		data.menu.rootItem.children.push_back(&data.newGameItem);
 		data.menu.rootItem.children.push_back(&data.goToMenuItem);
+		data.menu.rootItem.children.push_back(&data.continueItem);
 
+		SetTextParametrs(data.goToMenuItem.text, "Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 		SetTextParametrs(data.continueItem.text, "Continue", data.font, CHARACTER_SIZE_INIT_MENU);
-		SetTextParametrs(data.newGameItem.text, "New Game", data.font, CHARACTER_SIZE_INIT_MENU);
-		SetTextParametrs(data.goToMenuItem.text, "Go to Menu", data.font, CHARACTER_SIZE_INIT_MENU);
 
 		InitMenuItem(data.menu.rootItem);
 		SelectMenuItem(data.menu, &data.continueItem);
@@ -114,10 +112,6 @@ namespace SnakeGame
 		if (data.menu.selectedItem == &data.continueItem)
 		{
 			PopGameState(game);
-		}
-		else if (data.menu.selectedItem == &data.newGameItem)
-		{
-			SwitchGameState(game, GameStateType::Playing);
 		}
 		else if (data.menu.selectedItem == &data.goToMenuItem)
 		{

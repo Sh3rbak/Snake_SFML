@@ -33,7 +33,7 @@ namespace SnakeGame
 		SetTextParametrs(data.leaderNamesText, "", data.font, CHARACTER_SIZE_INIT_MENU, sf::Color::White);
 		SetTextParametrs(data.leaderScoresText, "", data.font, CHARACTER_SIZE_INIT_MENU, sf::Color::White);
 
-		for (int i = 0; i < game.recordsTable.size() && i < RECORDS_TABLE_SIZE_IN_GAME_OVER; ++i)
+		for (int i = 0; i < game.recordsTable.size() && i < RECORDS_TABLE_SIZE_IN_LEADER_BOARD; ++i)
 		{
 			std::string number = std::to_string(i + 1);
 			std::string name = recordTable[i].first;
@@ -118,19 +118,19 @@ namespace SnakeGame
 
 		sf::Text* hintText = &GetCurrentMenuContext(data.menu)->hintText;
 		hintText->setOrigin(GetItemOrigin(*hintText, { 0.5f, 0.f }));
-		hintText->setPosition(viewSize.x / 2.f, 100.f);
+		hintText->setPosition(viewSize.x / 2.f, 50.f);
 		window.draw(*hintText);
 
-		DrawMenu(data.menu, window, { viewSize.x / 2.f, viewSize.y * (4.f / 5.f) }, { 0.5f, 0.f });
+		DrawMenu(data.menu, window, { viewSize.x / 2.f, viewSize.y * (5.f / 6.f) }, { 0.5f, 0.f });
 
-		data.leaderNumberText.setOrigin(GetItemOrigin(data.leaderNumberText, { 0.5f, 0.5f }));
-		data.leaderNumberText.setPosition(viewSize.x / 2.f - 100.f, viewSize.y / 2.f);
+		data.leaderNumberText.setOrigin(GetItemOrigin(data.leaderNumberText, { 1.f, 0.5f }));
+		data.leaderNumberText.setPosition(viewSize.x / 2.f - 100.f, viewSize.y * 3.f / 7.f);
 
 		data.leaderNamesText.setOrigin(GetItemOrigin(data.leaderNamesText, { 0.5f, 0.5f }));
-		data.leaderNamesText.setPosition(viewSize.x / 2.f, viewSize.y / 2.f);
+		data.leaderNamesText.setPosition(viewSize.x / 2.f, viewSize.y * 3.f / 7.f);
 
-		data.leaderScoresText.setOrigin(GetItemOrigin(data.leaderScoresText, { 0.5f, 0.5f }));
-		data.leaderScoresText.setPosition(viewSize.x / 2.f + 100.f, viewSize.y / 2.f);
+		data.leaderScoresText.setOrigin(GetItemOrigin(data.leaderScoresText, { 0.f, 0.5f }));
+		data.leaderScoresText.setPosition(viewSize.x / 2.f + 100.f, viewSize.y * 3.f / 7.f);
 
 		window.draw(data.leaderNumberText);
 		window.draw(data.leaderNamesText);
