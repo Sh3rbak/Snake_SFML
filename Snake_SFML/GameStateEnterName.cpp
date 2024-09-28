@@ -94,6 +94,7 @@ namespace SnakeGame
                 if (IsAllowSymbol(event) && data.inputLetters.size() < MAX_SYMBOLS_IN_NAME)
                 {
                     data.inputLetters.push_back(toupper(static_cast<char>(event.text.unicode)));
+                    PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
                 }
             }
             if (event.type == sf::Event::KeyPressed)
@@ -101,6 +102,7 @@ namespace SnakeGame
                 if (event.key.code == sf::Keyboard::BackSpace && !data.inputLetters.empty())
                 {
                     data.inputLetters.pop_back();
+                    PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
                 }
             }
         }
@@ -110,7 +112,7 @@ namespace SnakeGame
             if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
             {
                 CollapseSelectedItem(data.menu);
-                PlayEnterSoundMenu(data.menu);
+                PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
             }
             else if (event.key.code == sf::Keyboard::Enter)
             {
@@ -123,26 +125,26 @@ namespace SnakeGame
                 event.key.code == sf::Keyboard::W)
             {
                 SelectPreviousMenuItem(data.menu);
-                PlayHoverSoundMenu(data.menu);
+                PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
             }
             else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
                 orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
                 event.key.code == sf::Keyboard::S)
             {
                 SelectNextMenuItem(data.menu);
-                PlayHoverSoundMenu(data.menu);
+                PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
             }
         }
 
         MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
         for (auto& child : expandedItem->children)
         {
-            if (IsMouseOnText(mousePosition, child->text))
+            if (IsMouseOnItem(mousePosition, child->text))
             {
                 if (data.menu.selectedItem != child)
                 {
                     SelectMenuItem(data.menu, child);
-                    PlayHoverSoundMenu(data.menu);
+                    PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
                 }
                 if (event.type == sf::Event::MouseButtonReleased)
                 {
@@ -155,7 +157,7 @@ namespace SnakeGame
         }
     }
 
-    void UpdateGameStateEnterName(GameStateEnterNameData& data, Game& game)
+    void UpdateGameStateEnterName(GameStateEnterNameData& data)
     {
         if (data.menu.selectedItem == &data.enterItem)
         {
@@ -163,7 +165,7 @@ namespace SnakeGame
         }
     }
 
-    void DrawGameStateEnterName(GameStateEnterNameData& data, Game& game, sf::RenderWindow& window)
+    void DrawGameStateEnterName(GameStateEnterNameData& data, sf::RenderWindow& window)
     {
         sf::Vector2f viewSize = (sf::Vector2f)window.getSize();
 
@@ -181,7 +183,7 @@ namespace SnakeGame
 
     void RunSelectedItem(GameStateEnterNameData& data, Game& game)
     {
-        PlayEnterSoundMenu(data.menu);
+        PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
         if (data.menu.selectedItem == &data.noItem)
         {
             PopGameState(game);

@@ -26,16 +26,16 @@ namespace SnakeGame
 
 	struct Snake
 	{
-		std::list<PartOfBody*> body;
+		std::list<std::shared_ptr<PartOfBody>> body;
 	};
 
-	void InitSnakeHead(Snake& snake, sf::Texture& textureOfHead);
-	void InitSnakePartOfBody(PartOfBody& partOfBody, sf::Texture& textureOfBody);
-	void PushPartOfBody(Snake& snake, sf::Texture& textureOfBody);
+	void InitSnakeHead(Snake& snake, const sf::Texture& textureOfHead);
+	void InitSnakePartOfBody(PartOfBody& partOfBody, const sf::Texture& textureOfBody);
+	void PushPartOfBody(Snake& snake, const sf::Texture& textureOfBody);
 	void ClearSnake(Snake& snake);
 	void UpdateSnakeBody(Snake& snake);
-	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction);
-	void SetSnakeHeadPosition(Snake& snake, Position position, PositionInGrid positionInGrid);
+	void SetSnakeHeadDirection(Snake& snake, const SnakeDirection direction);
+	void SetSnakeHeadPosition(Snake& snake, const Position position, const PositionInGrid positionInGrid);
 	PositionInGrid GetSnakeHeadPositionInGrid(Snake& snake);
 	SnakeDirection GetSnakeHeadDirection(Snake& snake);
 	std::vector<PositionInGrid> GetPositionSnake(Snake& snake);

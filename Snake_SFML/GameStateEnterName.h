@@ -29,7 +29,7 @@ namespace SnakeGame
 	void InitGameStateEnterName(GameStateEnterNameData& data, Game& game);
 	void ShutdownGameStateEnterName(GameStateEnterNameData& data, Game& game);
 	void HandleGameStateEnterNameWindowEvent(GameStateEnterNameData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition);
-	void UpdateGameStateEnterName(GameStateEnterNameData& data, Game& game);
-	void DrawGameStateEnterName(GameStateEnterNameData& data, Game& game, sf::RenderWindow& window);
+	void UpdateGameStateEnterName(GameStateEnterNameData& data);
+	void DrawGameStateEnterName(GameStateEnterNameData& data, sf::RenderWindow& window);
 	void RunSelectedItem(GameStateEnterNameData& data, Game& game);
 }

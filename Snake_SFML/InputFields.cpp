@@ -3,7 +3,7 @@
 
 namespace SnakeGame
 {
-    void InitInputFields(InputFields& fields, sf::Font& font, std::vector<char> standartName)
+    void InitInputFields(InputFields& fields, const sf::Font& font, const std::vector<char>& standartName)
     {
         fields.fields.resize(MAX_SYMBOLS_IN_NAME);
         for (auto& it : fields.fields)
@@ -30,7 +30,7 @@ namespace SnakeGame
         }
     }
 
-    void UpdateInputFields(InputFields& fields, std::vector<char> newName)
+    void UpdateInputFields(InputFields& fields, const std::vector<char>& newName)
     {
         for (auto& it : fields.fields)
         {

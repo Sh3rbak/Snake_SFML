@@ -2,7 +2,7 @@
 
 namespace SnakeGame
 {
-	void InitApple(Apple& apple, sf::Texture& texture)
+	void InitApple(Apple& apple, const sf::Texture& texture)
 	{
 		apple.sprite.setTexture(texture);
 		apple.sprite.setOrigin(GetItemOrigin(apple.sprite, { 0.5f, 0.5f }));
@@ -14,7 +14,7 @@ namespace SnakeGame
 		apple.isEaten = false;
 	}
 
-	void SetApplePosition(Apple& apple, Position position)
+	void SetApplePosition(Apple& apple, const Position position)
 	{
 		apple.position = position;
 	}

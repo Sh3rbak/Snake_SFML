@@ -83,7 +83,7 @@ namespace SnakeGame
 		}
 	}
 
-	bool IsPointInRect(sf::Vector2f point, sf::Vector2f rectTL, sf::Vector2f rectBR)
+	bool IsPointInRect(const sf::Vector2f point,  const sf::Vector2f rectTL, const sf::Vector2f rectBR)
 	{
 		if (point.x < rectTL.x || point.x > rectBR.x)
 		{
@@ -96,12 +96,6 @@ namespace SnakeGame
 		return true;
 	}
 
-	bool IsMouseOnText(const sf::Vector2i mousePosition, sf::Text& text)
-	{
-		sf::FloatRect rectText = text.getGlobalBounds();
-		return mousePosition.x > rectText.left && mousePosition.x < rectText.left + rectText.width &&
-			mousePosition.y > rectText.top && mousePosition.y < rectText.top + rectText.height;
-	}
 	bool IsAllowSymbol(const sf::Event& event)
 	{
 		if (event.type == sf::Event::TextEntered)

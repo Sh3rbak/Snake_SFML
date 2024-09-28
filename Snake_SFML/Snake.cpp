@@ -2,41 +2,38 @@
 
 namespace SnakeGame
 {
-	void InitSnakeHead(Snake& snake, sf::Texture& textureOfHead)
+	void InitSnakeHead(Snake& snake, const sf::Texture& textureOfHead)
 	{
 		if(snake.body.size() > 0)
 		{
 			return;
 		}
-		snake.body.push_back(new PartOfBody);
+		snake.body.push_back(std::make_shared<PartOfBody>());
 		snake.body.back()->sprite.setTexture(textureOfHead);
 		snake.body.back()->sprite.setOrigin(GetItemOrigin(snake.body.back()->sprite, { 0.5f, 0.5f }));
 		snake.body.back()->sprite.setScale(GetSpriteScale(snake.body.back()->sprite, { SNAKE_SIZE, SNAKE_SIZE }));
 	}
 
-	void InitSnakePartOfBody(PartOfBody& partOfBody, sf::Texture& textureOfBody)
+	void InitSnakePartOfBody(PartOfBody& partOfBody, const sf::Texture& textureOfBody)
 	{
 		partOfBody.sprite.setTexture(textureOfBody);
 		partOfBody.sprite.setOrigin(GetItemOrigin(partOfBody.sprite, { 0.5f, 0.5f }));
 		partOfBody.sprite.setScale(GetSpriteScale(partOfBody.sprite, { SNAKE_SIZE, SNAKE_SIZE }));
 	}
 
-	void PushPartOfBody(Snake& snake, sf::Texture& textureOfBody)
+	void PushPartOfBody(Snake& snake, const sf::Texture& textureOfBody)
 	{
 		if (snake.body.size() < 1)
 		{
 			return;
 		}
-		snake.body.push_back(new PartOfBody);
+		snake.body.push_back(std::make_shared<PartOfBody>());
 		InitSnakePartOfBody(*snake.body.back(), textureOfBody);
 	}
 
 	void ClearSnake(Snake& snake)
 	{
-		for (auto it : snake.body)
-		{
-			delete it;
-		}
+		snake.body.clear();
 	}
 
 	void UpdateSnakeBody(Snake& snake)
@@ -46,7 +43,7 @@ namespace SnakeGame
 			return;
 		}
 		// each part takes the parameters of the previous one
-		PartOfBody* oldPartOfBody = snake.body.back();
+		std::shared_ptr<PartOfBody> oldPartOfBody = snake.body.back();
 		for (auto it = snake.body.rbegin(); it != snake.body.rend(); ++it)
 		{
 			oldPartOfBody->position = (*it)->position;
@@ -56,7 +53,7 @@ namespace SnakeGame
 		}
 	}
 
-	void SetSnakeHeadDirection(Snake& snake, SnakeDirection direction)
+	void SetSnakeHeadDirection(Snake& snake, const SnakeDirection direction)
 	{
 		//the head should't move in the opposite direction at once
 		if ((static_cast<int>(snake.body.front()->direction) % 2) == (static_cast<int>(direction) % 2))
@@ -66,7 +63,7 @@ namespace SnakeGame
 		snake.body.front()->direction = direction;
 	}
 
-	void SetSnakeHeadPosition(Snake& snake, Position position, PositionInGrid positionInGrid)
+	void SetSnakeHeadPosition(Snake& snake, const Position position, const PositionInGrid positionInGrid)
 	{
 		snake.body.front()->position = position;
 		snake.body.front()->positionInGrid = positionInGrid;
@@ -85,7 +82,7 @@ namespace SnakeGame
 	std::vector<PositionInGrid> GetPositionSnake(Snake& snake)
 	{
 		std::vector<PositionInGrid> snakeInGrid;
-		for (auto it : snake.body)
+		for (auto& it : snake.body)
 		{
 			snakeInGrid.push_back(it->positionInGrid);
 		}
@@ -94,9 +91,9 @@ namespace SnakeGame
 
 	void DrawSnake(Snake& snake, sf::RenderWindow& window)
 	{
-		for (auto it : snake.body)
+		for (auto& it : snake.body)
 		{
-			const sf::Vector2f spriteScale = (GetSpriteScale(it->sprite, { SNAKE_SIZE, SNAKE_SIZE }));
+			const sf::Vector2f spriteScale = (GetSpriteScale(it->sprite, {SNAKE_SIZE, SNAKE_SIZE}));
 
 			switch (it->direction)
 			{

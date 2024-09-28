@@ -50,7 +50,7 @@ namespace SnakeGame
 		// No need to do anything here
 	}
 
-	void HandleGameStateLeaderBoardWindowEvent(GameStateLeaderBoardData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition)
+	void HandleGameStateLeaderBoardWindowEvent(GameStateLeaderBoardData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition)
 	{
 		if (!data.menu.selectedItem)
 		{
@@ -62,7 +62,7 @@ namespace SnakeGame
 			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
 			{
 				PopGameState(game);
-				PlayEnterSoundMenu(data.menu);
+				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
 			}
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
@@ -75,26 +75,26 @@ namespace SnakeGame
 				event.key.code == sf::Keyboard::W)
 			{
 				SelectPreviousMenuItem(data.menu);
-				PlayHoverSoundMenu(data.menu);
+				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
 				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
 				event.key.code == sf::Keyboard::S)
 			{
 				SelectNextMenuItem(data.menu);
-				PlayHoverSoundMenu(data.menu);
+				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 			}
 		}
 
 		MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
 		for (auto& child : expandedItem->children)
 		{
-			if (IsMouseOnText(mousePosition, child->text))
+			if (IsMouseOnItem(mousePosition, child->text))
 			{
 				if (data.menu.selectedItem != child)
 				{
 					SelectMenuItem(data.menu, child);
-					PlayHoverSoundMenu(data.menu);
+					PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
@@ -107,12 +107,12 @@ namespace SnakeGame
 		}
 	}
 
-	void UpdateGameStateLeaderBoard(GameStateLeaderBoardData& data, Game& game)
+	void UpdateGameStateLeaderBoard(GameStateLeaderBoardData& data)
 	{
 		// No need to do anything here
 	}
 
-	void DrawGameStateLeaderBoard(GameStateLeaderBoardData& data, Game& game, sf::RenderWindow& window)
+	void DrawGameStateLeaderBoard(GameStateLeaderBoardData& data, sf::RenderWindow& window)
 	{
 		sf::Vector2f viewSize = (sf::Vector2f)window.getSize();
 
@@ -139,7 +139,7 @@ namespace SnakeGame
 
 	void RunSelectedItem(GameStateLeaderBoardData& data, Game& game)
 	{
-		PlayEnterSoundMenu(data.menu);
+		PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
 		if (data.menu.selectedItem == &data.backItem)
 		{
 			PopGameState(game);

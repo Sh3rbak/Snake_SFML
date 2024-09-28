@@ -13,9 +13,9 @@ namespace SnakeGame
 		bool isEaten = false;
 	};
 
-	void InitApple(Apple& apple, sf::Texture& texture);
+	void InitApple(Apple& apple, const sf::Texture& texture);
 	void ResetAppleState(Apple& apple);
-	void SetApplePosition(Apple& apple, Position position);
+	void SetApplePosition(Apple& apple, const Position position);
 	void MarkAppleAsEaten(Apple& apple);
 	void DrawApple(Apple& apple, sf::RenderWindow& window);
 }

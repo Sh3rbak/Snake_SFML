@@ -2,7 +2,7 @@
 
 namespace SnakeGame
 {
-	void InitUI(UI& ui, sf::Font font)
+	void InitUI(UI& ui, const sf::Font font)
 	{
 		ui.font = font;
 

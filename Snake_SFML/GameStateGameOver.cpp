@@ -8,11 +8,6 @@ namespace SnakeGame
 	{
 		assert(data.fontTitle.loadFromFile(RESOURCES_PATH + "Fonts/SerpensRegular.ttf"));
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
-		assert(data.buffer.loadFromFile(RESOURCES_PATH + "Sound/Maodin204__Lose.wav"));
-		
-		data.loseSound.setBuffer(data.buffer);
-		data.loseSound.setVolume(SOUND_VOLUME);
-		data.loseSound.play();
 
 		if (game.isWinGame)
 		{
@@ -39,14 +34,16 @@ namespace SnakeGame
 		data.finalScoreText.setString("Score:  " + std::to_string(game.gameScore));
 
 		SetTextParametrs(data.recordsTableText, "Records:", data.font, CHARACTER_SIZE_INIT_MENU);
+
+		PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Lose);
 	}
 
-	void ShutdownGameStateGameOver(GameStateGameOverData& data, Game& game)
+	void ShutdownGameStateGameOver(GameStateGameOverData& data)
 	{
 		// No need to do anything here
 	}
 
-	void HandleGameStateGameOverWindowEvent(GameStateGameOverData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition)
+	void HandleGameStateGameOverWindowEvent(GameStateGameOverData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition)
 	{
 		if (!data.menu.selectedItem)
 		{
@@ -55,12 +52,7 @@ namespace SnakeGame
 
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
-			{
-				CollapseSelectedItem(data.menu);
-				PlayEnterSoundMenu(data.menu);
-			}
-			else if (event.key.code == sf::Keyboard::Enter)
+			if (event.key.code == sf::Keyboard::Enter)
 			{
 				RunSelectedItem(data, game);
 			}
@@ -71,26 +63,26 @@ namespace SnakeGame
 				event.key.code == sf::Keyboard::W)
 			{
 				SelectPreviousMenuItem(data.menu);
-				PlayHoverSoundMenu(data.menu);
+				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
 				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right ||
 				event.key.code == sf::Keyboard::S)
 			{
 				SelectNextMenuItem(data.menu);
-				PlayHoverSoundMenu(data.menu);
+				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 			}
 		}
 
 		MenuItem* expandedItem = GetCurrentMenuContext(data.menu);
 		for (auto& child : expandedItem->children)
 		{
-			if (IsMouseOnText(mousePosition, child->text))
+			if (IsMouseOnItem(mousePosition, child->text))
 			{
 				if (data.menu.selectedItem != child)
 				{
 					SelectMenuItem(data.menu, child);
-					PlayHoverSoundMenu(data.menu);
+					PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hover);
 				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
@@ -150,7 +142,7 @@ namespace SnakeGame
 		}
 	}
 
-	void DrawGameStateGameOver(GameStateGameOverData& data, Game& game, sf::RenderWindow& window)
+	void DrawGameStateGameOver(GameStateGameOverData& data, sf::RenderWindow& window)
 	{
 		sf::Vector2f viewSize = (sf::Vector2f)window.getSize();
 
@@ -172,7 +164,7 @@ namespace SnakeGame
 
 	void RunSelectedItem(GameStateGameOverData& data, Game& game)
 	{
-		PlayEnterSoundMenu(data.menu);
+		PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);
 		if (data.menu.selectedItem == &data.goToMenuItem)
 		{
 			SwitchGameState(game, GameStateType::MainMenu);

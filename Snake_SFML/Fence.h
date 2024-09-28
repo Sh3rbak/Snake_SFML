@@ -22,7 +22,7 @@ namespace SnakeGame
 		Fence() : position({ 0, 0 }) {}
 	};
 
-	void InitFence(Fence& fence, sf::Texture& texture, const Direction direction);
+	void InitFence(Fence& fence, const sf::Texture& texture, const Direction direction);
 	void SetPositionOfFence(Fence& fence, const Position position);
 	void DrawFence(Fence& fence, sf::RenderWindow& window);
 }

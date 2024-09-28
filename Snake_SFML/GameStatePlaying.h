@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "Apple.h"
 #include "Snake.h"
 #include "Fence.h"
@@ -22,31 +21,27 @@ namespace SnakeGame
 
 		Snake snake;
 		Apple apple;
-		std::vector<Fence*> fence;
+		std::vector<std::shared_ptr<Fence>> fence;
 		GameGrid gameGrid;
 
 		unsigned int numEatenApples = 0;
+		int pointPerApple = 0;
+		float snakeSpeed = 0;
+		SnakeDirection newDirection = SnakeDirection::Left;
+
 		bool isGameFinished = false;
 
 		float timeAtBeginning = 0;
 		float timeBetweenLoop = 0;
-		SnakeDirection newDirection = SnakeDirection::Left;
 
-		int pointPerApple = 0;
-		float snakeSpeed = 0;
 
 		sf::Font font;
 		UI ui;
-
-		sf::Music backgroundMusic;
-
-		sf::SoundBuffer buffer;
-		sf::Sound hitSound;
 	};
 
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game);
-	void ShutdownGameStatePlaying(GameStatePlayingData& data);
-	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event, sf::Vector2i mousePosition);
+	void ShutdownGameStatePlaying(GameStatePlayingData& data, Game& game);
+	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event, const sf::Vector2i mousePosition);
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime);
 	void DrawGameStatePlaying(GameStatePlayingData& data, Game& game, sf::RenderWindow& window);
 

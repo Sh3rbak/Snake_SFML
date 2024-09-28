@@ -138,6 +138,8 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrid.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameSounds.cpp" />
+    <ClCompile Include="GameStateDifficulty.cpp" />
     <ClCompile Include="GameStateEnterName.cpp" />
     <ClCompile Include="GameStateGameOver.cpp" />
     <ClCompile Include="GameStateLeaderBoard.cpp" />
@@ -157,6 +159,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGrid.h" />
     <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="GameSounds.h" />
+    <ClInclude Include="GameStateDifficulty.h" />
     <ClInclude Include="GameStateEnterName.h" />
     <ClInclude Include="GameStateGameOver.h" />
     <ClInclude Include="GameStateLeaderBoard.h" />

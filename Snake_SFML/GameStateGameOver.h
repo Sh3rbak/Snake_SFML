@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "Menu.h"
 
 namespace SnakeGame
@@ -20,15 +19,12 @@ namespace SnakeGame
 		sf::Text recordsTableText;
 
 		bool isRunGameStateEnterNameData = true;
-
-		sf::SoundBuffer buffer;
-		sf::Sound loseSound;
 	};
 
 	void InitGameStateGameOver(GameStateGameOverData& data, Game& game);
-	void ShutdownGameStateGameOver(GameStateGameOverData& data, Game& game);
-	void HandleGameStateGameOverWindowEvent(GameStateGameOverData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition);
+	void ShutdownGameStateGameOver(GameStateGameOverData& data);
+	void HandleGameStateGameOverWindowEvent(GameStateGameOverData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition);
 	void UpdateGameStateGameOver(GameStateGameOverData& data, Game& game);
-	void DrawGameStateGameOver(GameStateGameOverData& data, Game& game, sf::RenderWindow& window);
+	void DrawGameStateGameOver(GameStateGameOverData& data, sf::RenderWindow& window);
 	void RunSelectedItem(GameStateGameOverData& data, Game& game);
 }

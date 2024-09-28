@@ -37,7 +37,7 @@ namespace SnakeGame
 			GameItemType type = GameItemType::Fence)
 			{
 				cell.type = type;
-				data.fence.push_back(new Fence);
+				data.fence.push_back(std::make_shared<Fence>());
 				InitFence(*data.fence.back(), texture, direction);
 				SetPositionOfFence(*data.fence.back(), cell.position);
 			};
@@ -83,21 +83,18 @@ namespace SnakeGame
 		assert(data.appleTexture.loadFromFile(RESOURCES_PATH + "Textures/Apple.png"));
 
 		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
-		InitUI(data.ui, data.font);
 
 		assert(data.fenceTexture.loadFromFile(RESOURCES_PATH + "Textures/fence.png", sf::IntRect(8, 0, 8, 8)));
 		assert(data.fenceInCornerTexture.loadFromFile(RESOURCES_PATH + "Textures/fence.png", sf::IntRect(0, 0, 8, 8)));
 
-		assert(data.backgroundMusic.openFromFile(RESOURCES_PATH + "Sound/Clinthammer__Background_Music.wav"));
-		assert(data.buffer.loadFromFile(RESOURCES_PATH + "Sound/Owlstorm__Snake_hit.wav"));
-
 		InitGameGrid(data.gameGrid);
 		InitSnakeHead(data.snake, data.headSnakeTexture);
 		InitApple(data.apple, data.appleTexture);
+		InitUI(data.ui, data.font);
 
 		data.numEatenApples = 0;
 
-		int perimeter = (GRID_CELLS_VERTICAL * 2) + ((GRID_CELLS_HORIZONTAL - 2) * 2);
+		const int perimeter = (GRID_CELLS_VERTICAL * 2) + ((GRID_CELLS_HORIZONTAL - 2) * 2);
 		data.fence.reserve(perimeter);
 		SetFence(data, data.fenceTexture, data.fenceInCornerTexture);
 
@@ -114,25 +111,19 @@ namespace SnakeGame
 		SetApplePosition(data.apple, randomCell->position);
 		ChangeTypeCell(*randomCell, GameItemType::Apple);
 
-		data.backgroundMusic.setLoop(true);
-		data.backgroundMusic.setVolume(MUSIC_VOLUME);
-		data.backgroundMusic.play();
-
-		data.hitSound.setBuffer(data.buffer);
-		data.hitSound.setVolume(SOUND_VOLUME);
+		PlayGameMusic(game.sound, static_cast<uint8_t>(game.options));
 	}
 
-	void ShutdownGameStatePlaying(GameStatePlayingData& data)
+	void ShutdownGameStatePlaying(GameStatePlayingData& data, Game& game)
 	{
+		game.gameScore = data.numEatenApples;
 		ClearGameGrid(data.gameGrid);
 		ClearSnake(data.snake);
-		for (auto it : data.fence)
-		{
-			delete it;
-		}
+		data.fence.clear();
+		StopGameMusic(game.sound);
 	}
 
-	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event, sf::Vector2i mousePosition)
+	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, Game& game, const sf::Event event, const sf::Vector2i mousePosition)
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
@@ -143,7 +134,7 @@ namespace SnakeGame
 				ReturnOriginalPauseTime(data.ui);
 			}
 		}
-		if (IsMouseOnText(mousePosition, data.ui.pauseButtonText))
+		if (IsMouseOnItem(mousePosition, data.ui.pauseButtonText))
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
@@ -258,23 +249,22 @@ namespace SnakeGame
 			{
 				ClearTypeCell(*currectCell);
 				auto randomCell = GetRandomCell(data.gameGrid);
-				int score = 0;
+				int tryingFind = 0;
 				// find free cells
 				while (IsAnythingInCell(*randomCell))
 				{
-					if (score > 10)
+					if (tryingFind > 10)
 					{
 						randomCell = FindEmptyCell(data.gameGrid, *currectCell);
 						break;
 					}
 					randomCell = GetRandomCell(data.gameGrid);
-					++score;
+					++tryingFind;
 				}
-				//if run out of free cells
+				// if run out of free cells
 				if (randomCell == nullptr)
 				{
-					SwitchGameState(game, GameStateType::GameOver);
-					game.gameScore = data.numEatenApples;
+					data.isGameFinished = true;
 					game.isWinGame = true;
 					return;
 				}
@@ -285,7 +275,6 @@ namespace SnakeGame
 					PushPartOfBody(data.snake, data.bodySnakeTexture);
 				}
 				data.numEatenApples += data.pointPerApple;
-				data.hitSound.play();
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -295,15 +284,15 @@ namespace SnakeGame
 				break;
 			}
 			}
+			PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hit);
 		}
 
 		//checking collision with board
-		bool isOutsideField = currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
+		const bool isOutsideField = currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
 			                  currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL;
 		if (isOutsideField || data.isGameFinished)
 		{
 			SwitchGameState(game, GameStateType::GameOver);
-			game.gameScore = data.numEatenApples;
 			return;
 		}
 
@@ -317,7 +306,7 @@ namespace SnakeGame
 		DrawSnake(data.snake, window);
 		DrawApple(data.apple, window);
 		DrawUI(data.ui, window);
-		for (auto fence : data.fence)
+		for (auto& fence : data.fence)
 		{
 			DrawFence(*fence, window);
 		}

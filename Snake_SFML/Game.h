@@ -1,10 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameSettings.h"
+#include "GameSounds.h"
 #include <unordered_map>
 
 namespace SnakeGame
 {
+	enum class GameOptions : std::uint8_t
+	{
+		Sound = 1 << 0,
+		Music = 1 << 1,
+
+		Default = Sound | Music,
+		Empty = 0
+	};
+
 	enum class GameDifficulty
 	{
 		Beginner,
@@ -19,6 +29,9 @@ namespace SnakeGame
 		None = 0,
 		MainMenu,
 		Playing,
+		Difficulty,
+		GameMods,
+		Options,
 		LeaderBoard,
 		GameOver,
 		EnterName,
@@ -47,10 +60,13 @@ namespace SnakeGame
 		GameStateType pendingGameStateType = GameStateType::None;
 		bool pendingGameStateIsExclusivelyVisible = false;
 
+		GameOptions options = GameOptions::Default;
 		GameDifficulty difficulty = GameDifficulty::Normal;
 		bool isWinGame = false;
 		int gameScore = 0;
 		std::unordered_map<std::string, int> recordsTable;
+
+		GameSounds sound;
 	};
 
 	void InitGame(Game& game);

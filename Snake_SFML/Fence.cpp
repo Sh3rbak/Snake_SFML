@@ -2,7 +2,7 @@
 
 namespace SnakeGame
 {
-	void InitFence(Fence& fence, sf::Texture& texture, const Direction direction)
+	void InitFence(Fence& fence, const sf::Texture& texture, const Direction direction)
 	{
 		fence.sprite.setTexture(texture);
 		fence.sprite.setOrigin(GetItemOrigin(fence.sprite, { 0.5f, 0.5f }));

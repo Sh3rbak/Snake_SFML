@@ -18,7 +18,7 @@ namespace SnakeGame
 		sf::RectangleShape line;
 	};
 
-	void InitUI(UI& ui, sf::Font font);
+	void InitUI(UI& ui, const sf::Font font);
 	void UpdatePauseTimeUI(UI& ui, const float deltaTime);
 	void UpdateScoreUI(UI& ui, const int score);
 	void DrawUI(UI& ui, sf::RenderWindow& window);

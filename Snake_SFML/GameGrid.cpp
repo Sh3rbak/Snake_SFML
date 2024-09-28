@@ -37,8 +37,8 @@ namespace SnakeGame
 		{
 			for (int j = 0; j < GRID_CELLS_VERTICAL; ++j)
 			{
-				float positionX = static_cast<float>(CELL_SIZE * i + static_cast<float>(CELL_SIZE / 2) + HORIZONTAL_SPACE_FOR_GAME_FIELD);
-				float positionY = static_cast<float>(CELL_SIZE * j + FIELD_ON_TOP_SCREEN + static_cast<float>(CELL_SIZE / 2) + VERTICAL_SPACE_FOR_GAME_FIELD);
+				const float positionX = static_cast<float>(CELL_SIZE * i + static_cast<float>(CELL_SIZE / 2) + HORIZONTAL_SPACE_FOR_GAME_FIELD);
+				const float positionY = static_cast<float>(CELL_SIZE * j + FIELD_ON_TOP_SCREEN + static_cast<float>(CELL_SIZE / 2) + VERTICAL_SPACE_FOR_GAME_FIELD);
 				GridCell& cell = gameGrid.cells[i][j];
 				cell.position = { positionX, positionY };
 			}
@@ -52,12 +52,12 @@ namespace SnakeGame
 
 	GridCell* GetRandomCell(GameGrid& gameGrid)
 	{
-		int randomCellX = rand() % GRID_CELLS_HORIZONTAL;
-		int randomCellY = rand() % GRID_CELLS_VERTICAL;
+		const int randomCellX = rand() % GRID_CELLS_HORIZONTAL;
+		const int randomCellY = rand() % GRID_CELLS_VERTICAL;
 		return &gameGrid.cells[randomCellX][randomCellY];
 	}
 
-	GridCell* FindEmptyCell(GameGrid& gameGrid, GridCell& nextCell)
+	GridCell* FindEmptyCell(GameGrid& gameGrid, const GridCell& nextCell)
 	{
 		std::vector<GridCell*> positions;
 		for (auto i = gameGrid.cells.begin(); i != gameGrid.cells.end(); ++i)
@@ -84,7 +84,7 @@ namespace SnakeGame
 			return nullptr;
 		}
 
-		int randPos = rand() % positions.size();
+		const int randPos = rand() % positions.size();
 		return positions[randPos];
 	}
 }

@@ -19,11 +19,11 @@ namespace SnakeGame
 		sf::RectangleShape backround;
 	};
 
-	void InitGameStatePause(GameStatePauseData& data, Game& game);
+	void InitGameStatePause(GameStatePauseData& data);
 	void ShutdownGameStatePause(GameStatePauseData& data);
-	void HandleGameStatePauseWindowEvent(GameStatePauseData& data, Game& game, const sf::Event& event, sf::Vector2i mousePosition);
-	void UpdateGameStatePause(GameStatePauseData& data, Game& game);
-	void DrawGameStatePause(GameStatePauseData& data, Game& game, sf::RenderWindow& window);
+	void HandleGameStatePauseWindowEvent(GameStatePauseData& data, Game& game, const sf::Event& event, const sf::Vector2i mousePosition);
+	void UpdateGameStatePause(GameStatePauseData& data);
+	void DrawGameStatePause(GameStatePauseData& data, sf::RenderWindow& window);
 	void RunSelectedItem(GameStatePauseData& data, Game& game);
 }
 

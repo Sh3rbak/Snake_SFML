@@ -119,7 +119,7 @@ namespace SnakeGame
 			expandedItem->childrenAlignment, position, origin);
 	}
 
-	void SetTextParametrs(sf::Text& itemText, const std::string title, sf::Font& font, const int size, sf::Color color)
+	void SetTextParametrs(sf::Text& itemText, const std::string title, const sf::Font& font, const int size, sf::Color color)
 	{
 		itemText.setString(title);
 		itemText.setFont(font);
@@ -128,21 +128,5 @@ namespace SnakeGame
 		{
 			itemText.setFillColor(color);
 		}
-	}
-
-	void PlayEnterSoundMenu(Menu& menu)
-	{
-		assert(menu.buffer.loadFromFile(RESOURCES_PATH + "Sound/Timgormly_Enter.wav"));
-		menu.enterSound.setBuffer(menu.buffer);
-		menu.enterSound.setVolume(SOUND_VOLUME);
-		menu.enterSound.play();
-	}
-
-	void PlayHoverSoundMenu(Menu& menu)
-	{
-		assert(menu.buffer.loadFromFile(RESOURCES_PATH + "Sound/Theevilsocks__menu-hover.wav"));
-		menu.hoverSound.setBuffer(menu.buffer);
-		menu.hoverSound.setVolume(SOUND_VOLUME);
-		menu.hoverSound.play();
 	}
 }

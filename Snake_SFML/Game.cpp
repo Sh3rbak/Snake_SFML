@@ -5,6 +5,8 @@
 #include "GameStateEnterName.h"
 #include "GameStatePause.h"
 #include "GameStateLeaderBoard.h"
+#include "GameStateOptions.h"
+#include "GameStateDifficulty.h"
 #include <cassert>
 #include <fstream>
 
@@ -13,6 +15,12 @@ namespace SnakeGame
 	void InitGame(Game& game)
 	{
 		DeserializeGame(game);
+
+		InitGameSounds(game.sound);
+		InitGameMusic(game.sound);
+
+		game.options = GameOptions::Default;
+		game.difficulty = GameDifficulty::Normal;
 
 		game.gameStateChangeType = GameStateChangeType::None;
 		game.pendingGameStateType = GameStateType::None;
@@ -136,15 +144,23 @@ namespace SnakeGame
 		{
 		case SnakeGame::GameStateType::MainMenu:
 			state.data = std::make_shared<GameStateMainMenuData>();
-			InitGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game);
+			InitGameStateMainMenu(*(GameStateMainMenuData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Playing:
 			state.data = std::make_shared<GameStatePlayingData>();
 			InitGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game);
 			break;
+		case SnakeGame::GameStateType::Difficulty:
+			state.data = std::make_shared<GameStateDifficultyData>();
+			InitGameStateDifficulty(*(GameStateDifficultyData*)state.data.get());
+			break;
 		case SnakeGame::GameStateType::LeaderBoard:
 			state.data = std::make_shared<GameStateLeaderBoardData>();
 			InitGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game);
+			break;
+		case SnakeGame::GameStateType::Options:
+			state.data = std::make_shared<GameStateOptionsData>();
+			InitGameStateOptions(*(GameStateOptionsData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			state.data = std::make_shared<GameStateGameOverData>();
@@ -156,7 +172,7 @@ namespace SnakeGame
 			break;
 		case SnakeGame::GameStateType::Pause:
 			state.data = std::make_shared<GameStatePauseData>();
-			InitGameStatePause(*(GameStatePauseData*)state.data.get(), game);
+			InitGameStatePause(*(GameStatePauseData*)state.data.get());
 			break;
 		default:
 			assert(false);
@@ -172,13 +188,19 @@ namespace SnakeGame
 			ShutdownGameStateMainMenu(*(GameStateMainMenuData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Playing:
-			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get());
+			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game);
+			break;
+		case SnakeGame::GameStateType::Difficulty:
+			ShutdownGameStateDifficulty(*(GameStateDifficultyData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::LeaderBoard:
 			ShutdownGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get());
 			break;
+		case SnakeGame::GameStateType::Options:
+			ShutdownGameStateOptions(*(GameStateOptionsData*)state.data.get());
+			break;
 		case SnakeGame::GameStateType::GameOver:
-			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
+			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::EnterName:
 			ShutdownGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game);
@@ -202,8 +224,14 @@ namespace SnakeGame
 		case SnakeGame::GameStateType::Playing:
 			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data.get(), game, event, mousePosition);
 			break;
+		case SnakeGame::GameStateType::Difficulty:
+			HandleGameStateDifficultyWindowEvent(*(GameStateDifficultyData*)state.data.get(), game, event, mousePosition);
+			break;
 		case SnakeGame::GameStateType::LeaderBoard:
 			HandleGameStateLeaderBoardWindowEvent(*(GameStateLeaderBoardData*)state.data.get(), game, event, mousePosition);
+			break;
+		case SnakeGame::GameStateType::Options:
+			HandleGameStateOptionsWindowEvent(*(GameStateOptionsData*)state.data.get(), game, event, mousePosition);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data.get(), game, event, mousePosition);
@@ -225,22 +253,28 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
-			UpdateGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game);
+			UpdateGameStateMainMenu(*(GameStateMainMenuData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Playing:
 			UpdateGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, deltaTime);
 			break;
+		case SnakeGame::GameStateType::Difficulty:
+			UpdateGameStateDifficulty(*(GameStateDifficultyData*)state.data.get(), game);
+			break;
 		case SnakeGame::GameStateType::LeaderBoard:
-			UpdateGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game);
+			UpdateGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get());
+			break;
+		case SnakeGame::GameStateType::Options:
+			UpdateGameStateOptions(*(GameStateOptionsData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::GameOver:
 			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game);
 			break;
 		case SnakeGame::GameStateType::EnterName:
-			UpdateGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game);
+			UpdateGameStateEnterName(*(GameStateEnterNameData*)state.data.get());
 			break;
 		case SnakeGame::GameStateType::Pause:
-			UpdateGameStatePause(*(GameStatePauseData*)state.data.get(), game);
+			UpdateGameStatePause(*(GameStatePauseData*)state.data.get());
 			break;
 		default:
 			assert(false);
@@ -253,22 +287,28 @@ namespace SnakeGame
 		switch (state.type)
 		{
 		case SnakeGame::GameStateType::MainMenu:
-			DrawGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), game, window);
+			DrawGameStateMainMenu(*(GameStateMainMenuData*)state.data.get(), window);
 			break;
 		case SnakeGame::GameStateType::Playing:
 			DrawGameStatePlaying(*(GameStatePlayingData*)state.data.get(), game, window);
 			break;
+		case SnakeGame::GameStateType::Difficulty:
+			DrawGameStateDifficulty(*(GameStateDifficultyData*)state.data.get(), game, window);
+			break;
 		case SnakeGame::GameStateType::LeaderBoard:
-			DrawGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), game, window);
+			DrawGameStateLeaderBoard(*(GameStateLeaderBoardData*)state.data.get(), window);
+			break;
+		case SnakeGame::GameStateType::Options:
+			DrawGameStateOptions(*(GameStateOptionsData*)state.data.get(), window);
 			break;
 		case SnakeGame::GameStateType::GameOver:
-			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), game, window);
+			DrawGameStateGameOver(*(GameStateGameOverData*)state.data.get(), window);
 			break;
 		case SnakeGame::GameStateType::EnterName:
-			DrawGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), game, window);
+			DrawGameStateEnterName(*(GameStateEnterNameData*)state.data.get(), window);
 			break;
 		case SnakeGame::GameStateType::Pause:
-			DrawGameStatePause(*(GameStatePauseData*)state.data.get(), game, window);
+			DrawGameStatePause(*(GameStatePauseData*)state.data.get(), window);
 			break;
 		default:
 			assert(false);
