@@ -7,7 +7,6 @@ namespace SnakeGame
 {
 	struct Apple
 	{
-		PositionInGrid positionInGrid;
 		Position position;
 		sf::Sprite sprite;
 		bool isEaten = false;

@@ -29,6 +29,9 @@ namespace SnakeGame
 		}
 		snake.body.push_back(std::make_shared<PartOfBody>());
 		InitSnakePartOfBody(*snake.body.back(), textureOfBody);
+		snake.body.back()->position = (++snake.body.rbegin())->get()->position;
+		snake.body.back()->positionInGrid = (++snake.body.rbegin())->get()->positionInGrid;
+		snake.body.back()->direction = (++snake.body.rbegin())->get()->direction;
 	}
 
 	void ClearSnake(Snake& snake)

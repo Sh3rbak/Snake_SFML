@@ -21,6 +21,9 @@ namespace SnakeGame
 
 		Snake snake;
 		Apple apple;
+		Apple goldApple;
+		Apple poisnedApple;
+		Apple invertedApple;
 		std::vector<std::shared_ptr<Fence>> fence;
 		GameGrid gameGrid;
 
@@ -49,6 +52,7 @@ namespace SnakeGame
 	void SetNewDirection(GameStatePlayingData& data);
 	void CalculateNextCellDependingOnDirection(GameStatePlayingData& data, PositionInGrid& positionInGrid);
 	void UpdateCellsTypeWhenSnakeMoves(GameStatePlayingData& data, GridCell& newCell, PositionInGrid newPositionInGrid);
+	GridCell* FindRandomFreeCell(GameGrid& grid, GridCell& nextCellForSnake);
 
 	void SetDifficultyGame(GameStatePlayingData& data, Game& game);
 }

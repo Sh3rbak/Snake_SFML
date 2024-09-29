@@ -11,7 +11,7 @@ namespace SnakeGame
         assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Retro-Gaming.ttf"));
 
         SetTextParametrs(data.menu.rootItem.hintText, "Are you want to enter name?", 
-            data.font, CHARACTER_SIZE_LONG_TITLE, sf::Color::White);
+                         data.font, CHARACTER_SIZE_LONG_TITLE, sf::Color::White);
         data.menu.rootItem.childrenOrientation = Orientation::Vertical;
         data.menu.rootItem.childrenAlignment = Alignment::Middle;
         data.menu.rootItem.childrenSpacing = 20.f;
@@ -55,16 +55,16 @@ namespace SnakeGame
             };
         std::sort(data.newRecordsTable.begin(), data.newRecordsTable.end(), cmp);
 
-        std::unordered_map<std::string, int> recordsTable;
+        std::unordered_multimap<std::string, int> recordsTable;
 
         int score = 0;
-        for (auto it = data.newRecordsTable.rbegin(); it != data.newRecordsTable.rend(); ++it)
+        for (auto it = data.newRecordsTable.begin(); it != data.newRecordsTable.end(); ++it)
         {
             if (score > RECORDS_TABLE_SIZE_IN_LEADER_BOARD)
             {
                 break;
             }
-            recordsTable[it->first] = it->second;
+            recordsTable.insert({ it->first, it->second });
             ++score;
         }
 

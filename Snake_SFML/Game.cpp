@@ -338,7 +338,7 @@ namespace SnakeGame
 			int score;
 			while (file >> name >> score)
 			{
-				game.recordsTable[name] = score;
+				game.recordsTable.insert({ name, score });
 			}
 			file.close();
 			return true;

@@ -11,6 +11,9 @@ namespace SnakeGame
 	{
 		None,
 		Apple,
+		GoldApple,
+		PoisonedApple,
+		InvertedApple,
 		Snake,
 		Fence
 	};

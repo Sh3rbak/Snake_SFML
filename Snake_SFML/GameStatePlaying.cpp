@@ -212,6 +212,25 @@ namespace SnakeGame
 		}
 	}
 
+	GridCell* FindRandomFreeCell(GameGrid& grid, GridCell& nextCellForSnake)
+	{
+		auto randomCell = GetRandomCell(grid);
+		int tryingFind = 0;
+		// find free cells
+		while (IsAnythingInCell(*randomCell))
+		{
+			if (tryingFind > 10)
+			{
+				randomCell = FindEmptyCell(grid, nextCellForSnake);
+				break;
+			}
+			randomCell = GetRandomCell(grid);
+			++tryingFind;
+		}
+		
+		return randomCell;
+	}
+
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime)
 	{		
 		if (data.timeAtBeginning < PAUSE_AT_BEGINNING)
@@ -247,34 +266,27 @@ namespace SnakeGame
 			{
 			case SnakeGame::GameItemType::Apple:
 			{
-				ClearTypeCell(*currectCell);
-				auto randomCell = GetRandomCell(data.gameGrid);
-				int tryingFind = 0;
-				// find free cells
-				while (IsAnythingInCell(*randomCell))
-				{
-					if (tryingFind > 10)
-					{
-						randomCell = FindEmptyCell(data.gameGrid, *currectCell);
-						break;
-					}
-					randomCell = GetRandomCell(data.gameGrid);
-					++tryingFind;
-				}
+				data.numEatenApples += data.pointPerApple;
+				auto randomCell = FindRandomFreeCell(data.gameGrid, *currectCell);
 				// if run out of free cells
 				if (randomCell == nullptr)
 				{
 					data.isGameFinished = true;
 					game.isWinGame = true;
-					return;
+					break;
 				}
 				SetApplePosition(data.apple, randomCell->position);
 				ChangeTypeCell(*randomCell, GameItemType::Apple);
+				ClearTypeCell(*currectCell);
 				for (int i = 0; i < SNAKE_LEINGH_PER_APPLE; ++i)
 				{
 					PushPartOfBody(data.snake, data.bodySnakeTexture);
 				}
-				data.numEatenApples += data.pointPerApple;
+				break;
+			}
+			case SnakeGame::GameItemType::GoldApple:
+			{
+
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -289,7 +301,7 @@ namespace SnakeGame
 
 		//checking collision with board
 		const bool isOutsideField = currectPositionInGrid.x < 0 || currectPositionInGrid.x >= GRID_CELLS_HORIZONTAL ||
-			                  currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL;
+									currectPositionInGrid.y < 0 || currectPositionInGrid.y >= GRID_CELLS_VERTICAL;
 		if (isOutsideField || data.isGameFinished)
 		{
 			SwitchGameState(game, GameStateType::GameOver);

@@ -64,7 +64,7 @@ namespace SnakeGame
 		GameDifficulty difficulty = GameDifficulty::Normal;
 		bool isWinGame = false;
 		int gameScore = 0;
-		std::unordered_map<std::string, int> recordsTable;
+		std::unordered_multimap<std::string, int> recordsTable;
 
 		GameSounds sound;
 	};
