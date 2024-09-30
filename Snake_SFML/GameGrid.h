@@ -11,22 +11,22 @@ namespace SnakeGame
 	{
 		None,
 		Apple,
-		GoldApple,
-		PoisonedApple,
+		BigApple,
+		BoostApple,
 		InvertedApple,
 		Snake,
 		Fence
 	};
 
 	struct GridCell
-	{
+	{ 
+		PositionInGrid positionInGrid;
 		Position position;
 		GameItemType type = GameItemType::None;
 	};
 
 	void ChangeTypeCell(GridCell& gridCell, GameItemType itemType);
-	void ClearTypeCell(GridCell& gridCell);
-	bool IsAnythingInCell(GridCell& cell);
+	bool IsAnythingInCell(const GridCell& cell);
 
 	struct GameGrid
 	{
@@ -37,5 +37,6 @@ namespace SnakeGame
 	void ClearGameGrid(GameGrid& gameGrid);
 	GridCell* GetRandomCell(GameGrid& gameGrid);
 	GridCell* FindEmptyCell(GameGrid& gameGrid, const GridCell& nextCell);
+	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake);
 }
 

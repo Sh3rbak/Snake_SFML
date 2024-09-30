@@ -9,6 +9,13 @@
 
 namespace SnakeGame
 {
+	enum class AppleEffect : std::uint8_t
+	{
+		InvertedMoved = 1 << 0,
+		BoostSpeed = 1 << 1,
+		Empty = 0
+	};
+
 	struct Game;
 
 	struct GameStatePlayingData
@@ -21,9 +28,10 @@ namespace SnakeGame
 
 		Snake snake;
 		Apple apple;
-		Apple goldApple;
-		Apple poisnedApple;
+		Apple bigApple;
+		Apple boostApple;
 		Apple invertedApple;
+		std::vector<Apple*> unusualApples;
 		std::vector<std::shared_ptr<Fence>> fence;
 		GameGrid gameGrid;
 
@@ -31,12 +39,12 @@ namespace SnakeGame
 		int pointPerApple = 0;
 		float snakeSpeed = 0;
 		SnakeDirection newDirection = SnakeDirection::Left;
+		AppleEffect effect = AppleEffect::Empty;
 
 		bool isGameFinished = false;
 
 		float timeAtBeginning = 0;
 		float timeBetweenLoop = 0;
-
 
 		sf::Font font;
 		UI ui;
@@ -52,7 +60,8 @@ namespace SnakeGame
 	void SetNewDirection(GameStatePlayingData& data);
 	void CalculateNextCellDependingOnDirection(GameStatePlayingData& data, PositionInGrid& positionInGrid);
 	void UpdateCellsTypeWhenSnakeMoves(GameStatePlayingData& data, GridCell& newCell, PositionInGrid newPositionInGrid);
-	GridCell* FindRandomFreeCell(GameGrid& grid, GridCell& nextCellForSnake);
+	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake);
+	void CalculateAppearanceOfUnusualApple(Apple& apple, GameGrid& gameGrid, GridCell& nextCellForSneak);
 
 	void SetDifficultyGame(GameStatePlayingData& data, Game& game);
 }

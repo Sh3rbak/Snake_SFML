@@ -90,6 +90,12 @@ namespace SnakeGame
 		InitGameGrid(data.gameGrid);
 		InitSnakeHead(data.snake, data.headSnakeTexture);
 		InitApple(data.apple, data.appleTexture);
+		InitApple(data.bigApple, data.appleTexture, KindOfApple::BigApple);
+		InitApple(data.boostApple, data.appleTexture, KindOfApple::BoostApple);
+		InitApple(data.invertedApple, data.appleTexture, KindOfApple::InvertedApple);
+		data.unusualApples.push_back(&data.bigApple);
+		data.unusualApples.push_back(&data.boostApple);
+		data.unusualApples.push_back(&data.invertedApple);
 		InitUI(data.ui, data.font);
 
 		data.numEatenApples = 0;
@@ -108,7 +114,7 @@ namespace SnakeGame
 		{
 			randomCell = GetRandomCell(data.gameGrid);
 		}
-		SetApplePosition(data.apple, randomCell->position);
+		SetApplePosition(data.apple, randomCell->position, randomCell->positionInGrid);
 		ChangeTypeCell(*randomCell, GameItemType::Apple);
 
 		PlayGameMusic(game.sound, static_cast<uint8_t>(game.options));
@@ -147,21 +153,22 @@ namespace SnakeGame
 
 	void SetNewDirection(GameStatePlayingData& data)
 	{
+		bool isEffect = static_cast<std::uint8_t>(data.effect) & static_cast<std::uint8_t>(AppleEffect::InvertedMoved);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
-			data.newDirection = SnakeDirection::Up;
+			data.newDirection = !isEffect ? SnakeDirection::Up : SnakeDirection::Down;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		{
-			data.newDirection = SnakeDirection::Right;
+			data.newDirection = !isEffect ? SnakeDirection::Right : SnakeDirection::Left;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
-			data.newDirection = SnakeDirection::Down;
+			data.newDirection = !isEffect ? SnakeDirection::Down : SnakeDirection::Up;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
-			data.newDirection = SnakeDirection::Left;
+			data.newDirection = !isEffect ? SnakeDirection::Left : SnakeDirection::Right;
 		}
 	}
 
@@ -198,7 +205,7 @@ namespace SnakeGame
 		std::vector<PositionInGrid> positionSnakeInGrid = GetPositionSnake(data.snake);
 		for (auto it = positionSnakeInGrid.begin(); it != positionSnakeInGrid.end(); ++it)
 		{
-			ClearTypeCell(data.gameGrid.cells[it->x][it->y]);
+			ChangeTypeCell(data.gameGrid.cells[it->x][it->y], GameItemType::None);
 		}
 
 		UpdateSnakeBody(data.snake);
@@ -212,23 +219,33 @@ namespace SnakeGame
 		}
 	}
 
-	GridCell* FindRandomFreeCell(GameGrid& grid, GridCell& nextCellForSnake)
+	void CalculateAppearanceOfUnusualApple(Apple& apple, GameGrid& gameGrid, GridCell& nextCellForSneak)
 	{
-		auto randomCell = GetRandomCell(grid);
-		int tryingFind = 0;
-		// find free cells
-		while (IsAnythingInCell(*randomCell))
+		if (IsChanceAppearanceOfUnusualApple(apple) && apple.isEaten)
 		{
-			if (tryingFind > 10)
+			GridCell* randomCell;
+			// if run out of free cells
+			if (FindRandomFreeCell(gameGrid, randomCell, nextCellForSneak))
 			{
-				randomCell = FindEmptyCell(grid, nextCellForSnake);
-				break;
+				apple.isEaten = false;
+				SetApplePosition(apple, randomCell->position, randomCell->positionInGrid);
+				switch (apple.kind)
+				{
+				case SnakeGame::KindOfApple::BigApple:
+					ChangeTypeCell(*randomCell, GameItemType::BigApple);
+					break;
+				case SnakeGame::KindOfApple::BoostApple:
+					ChangeTypeCell(*randomCell, GameItemType::BoostApple);
+					break;
+				case SnakeGame::KindOfApple::InvertedApple:
+					ChangeTypeCell(*randomCell, GameItemType::InvertedApple);
+					break;
+				}
+				const int durationApple = std::abs(randomCell->positionInGrid.x - nextCellForSneak.positionInGrid.x) +
+										  std::abs(randomCell->positionInGrid.y - nextCellForSneak.positionInGrid.y);
+				SetAppleDuration(apple, durationApple);
 			}
-			randomCell = GetRandomCell(grid);
-			++tryingFind;
 		}
-		
-		return randomCell;
 	}
 
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime)
@@ -250,6 +267,20 @@ namespace SnakeGame
 		}
 		data.timeBetweenLoop = 0;
 		
+		for (auto& apple : data.unusualApples)
+		{
+			if (GetAppleDuration(*apple) > 0)
+			{
+				SetAppleDuration(*apple, GetAppleDuration(*apple) - 1);
+			}
+			if (!apple->isEaten && GetAppleDuration(*apple) < 1)
+			{
+				SetAppleDuration(*apple, 0);
+				MarkAppleAsEaten(*apple);
+				ChangeTypeCell(data.gameGrid.cells[apple->positionInGrid.x][apple->positionInGrid.y], GameItemType::None);
+			}
+		}
+
 		SetSnakeHeadDirection(data.snake, data.newDirection);
 
 		//calculate the next cell
@@ -260,6 +291,11 @@ namespace SnakeGame
 
 		currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
+		for (auto& apple : data.unusualApples)
+		{
+			CalculateAppearanceOfUnusualApple(*apple, data.gameGrid, *currectCell);
+		}
+
 		if (IsAnythingInCell(*currectCell))
 		{
 			switch (currectCell->type)
@@ -267,26 +303,38 @@ namespace SnakeGame
 			case SnakeGame::GameItemType::Apple:
 			{
 				data.numEatenApples += data.pointPerApple;
-				auto randomCell = FindRandomFreeCell(data.gameGrid, *currectCell);
+				GridCell* randomCell;
 				// if run out of free cells
-				if (randomCell == nullptr)
+				if (!FindRandomFreeCell(data.gameGrid, randomCell, *currectCell))
 				{
 					data.isGameFinished = true;
 					game.isWinGame = true;
 					break;
 				}
-				SetApplePosition(data.apple, randomCell->position);
+				SetApplePosition(data.apple, randomCell->position, randomCell->positionInGrid);
 				ChangeTypeCell(*randomCell, GameItemType::Apple);
-				ClearTypeCell(*currectCell);
-				for (int i = 0; i < SNAKE_LEINGH_PER_APPLE; ++i)
-				{
-					PushPartOfBody(data.snake, data.bodySnakeTexture);
-				}
 				break;
 			}
-			case SnakeGame::GameItemType::GoldApple:
+			case SnakeGame::GameItemType::BigApple:
 			{
-
+				data.numEatenApples += data.pointPerApple * 2;
+				data.bigApple.isEaten = true;
+				break;
+			}
+			case SnakeGame::GameItemType::BoostApple:
+			{
+				data.numEatenApples += data.pointPerApple;
+				data.boostApple.isEaten = true;
+				data.effect = (AppleEffect)(static_cast<std::uint8_t>(data.effect) | 
+							  static_cast<std::uint8_t>(AppleEffect::BoostSpeed));
+				break;
+			}
+			case SnakeGame::GameItemType::InvertedApple:
+			{
+				data.numEatenApples += data.pointPerApple;
+				data.invertedApple.isEaten = true;
+				data.effect = (AppleEffect)(static_cast<std::uint8_t>(data.effect) | 
+							  static_cast<std::uint8_t>(AppleEffect::InvertedMoved));
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -295,6 +343,11 @@ namespace SnakeGame
 				data.isGameFinished = true;
 				break;
 			}
+			}
+			ChangeTypeCell(*currectCell, GameItemType::None);
+			for (int i = 0; i < SNAKE_LEINGH_PER_APPLE; ++i)
+			{
+				PushPartOfBody(data.snake, data.bodySnakeTexture);
 			}
 			PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Hit);
 		}
@@ -321,6 +374,14 @@ namespace SnakeGame
 		for (auto& fence : data.fence)
 		{
 			DrawFence(*fence, window);
+		}
+
+		for (auto& apple : data.unusualApples)
+		{
+			if (!apple->isEaten)
+			{
+				DrawApple(*apple, window);
+			}
 		}
 	}
 }

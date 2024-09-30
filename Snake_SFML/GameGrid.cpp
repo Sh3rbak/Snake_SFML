@@ -4,19 +4,10 @@ namespace SnakeGame
 {
 	void ChangeTypeCell(GridCell& gridCell, GameItemType itemType)
 	{
-		if (gridCell.type != GameItemType::None)
-		{
-			return;
-		}
 		gridCell.type = itemType;
 	}
 
-	void ClearTypeCell(GridCell& gridCell)
-	{
-		gridCell.type = GameItemType::None;
-	}
-
-	bool IsAnythingInCell(GridCell& cell)
+	bool IsAnythingInCell(const GridCell& cell)
 	{
 		if (cell.type != GameItemType::None)
 		{
@@ -41,6 +32,7 @@ namespace SnakeGame
 				const float positionY = static_cast<float>(CELL_SIZE * j + FIELD_ON_TOP_SCREEN + static_cast<float>(CELL_SIZE / 2) + VERTICAL_SPACE_FOR_GAME_FIELD);
 				GridCell& cell = gameGrid.cells[i][j];
 				cell.position = { positionX, positionY };
+				cell.positionInGrid = { i , j };
 			}
 		}
 	}
@@ -64,18 +56,10 @@ namespace SnakeGame
 		{
 			for (auto cell = row->begin(); cell != row->end(); ++cell)
 			{
-				if (cell->type == GameItemType::None)
+				if (cell->type == GameItemType::None && &*cell != &nextCell)
 				{
 					positions.push_back(&(*cell));
 				}
-			}
-		}
-		// erase cell where snake will be
-		for (int i = 0; i < positions.size(); ++i)
-		{
-			if (positions[i] == &nextCell)
-			{
-				positions.erase(positions.begin() + i);
 			}
 		}
 
@@ -86,5 +70,29 @@ namespace SnakeGame
 
 		const int randPos = rand() % positions.size();
 		return positions[randPos];
+	}
+
+	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake)
+	{
+		auto randomCell = GetRandomCell(grid);
+		int tryingFind = 0;
+		// find free cells
+		while (IsAnythingInCell(*randomCell))
+		{
+			if (tryingFind > 10)
+			{
+				randomCell = FindEmptyCell(grid, nextCellForSnake);
+				break;
+			}
+			randomCell = GetRandomCell(grid);
+			++tryingFind;
+		}
+
+		if (randomCell == nullptr)
+		{
+			return false;
+		}
+		expactedFreeCell = randomCell;
+		return true;
 	}
 }
