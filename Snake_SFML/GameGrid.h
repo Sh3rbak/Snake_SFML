@@ -11,12 +11,16 @@ namespace SnakeGame
 	{
 		None,
 		Apple,
+		BigApple,
+		BoostApple,
+		InvertedApple,
 		Snake,
 		Fence
 	};
 
 	struct GridCell
 	{ 
+		PositionInGrid positionInGrid;
 		Position position;
 		GameItemType type = GameItemType::None;
 	};
