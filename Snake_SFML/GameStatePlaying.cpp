@@ -4,7 +4,7 @@
 
 namespace SnakeGame
 {
-	void SetDifficultyGame(GameStatePlayingData& data, Game& game)
+	void InitDifficultyGame(GameStatePlayingData& data, Game& game)
 	{
 		switch (game.difficulty)
 		{
@@ -75,7 +75,7 @@ namespace SnakeGame
 
 	void InitGameStatePlaying(GameStatePlayingData& data, Game& game)
 	{
-		SetDifficultyGame(data, game);
+		InitDifficultyGame(data, game);
 		game.isWinGame = false;
 
 		assert(data.headSnakeTexture.loadFromFile(RESOURCES_PATH + "Textures/SnakeHead.png"));
@@ -96,6 +96,12 @@ namespace SnakeGame
 		data.unusualApples.push_back(&data.bigApple);
 		data.unusualApples.push_back(&data.boostApple);
 		data.unusualApples.push_back(&data.invertedApple);
+
+		for (auto& apple : data.unusualApples)
+		{
+			MarkAppleAsEaten(*apple);
+		}
+
 		InitUI(data.ui, data.font);
 
 		data.numEatenApples = 0;
@@ -227,7 +233,7 @@ namespace SnakeGame
 			// if run out of free cells
 			if (FindRandomFreeCell(gameGrid, randomCell, nextCellForSneak))
 			{
-				apple.isEaten = false;
+				ResetAppleState(apple);
 				SetApplePosition(apple, randomCell->position, randomCell->positionInGrid);
 				switch (apple.kind)
 				{
@@ -242,10 +248,16 @@ namespace SnakeGame
 					break;
 				}
 				const int durationApple = std::abs(randomCell->positionInGrid.x - nextCellForSneak.positionInGrid.x) +
-										  std::abs(randomCell->positionInGrid.y - nextCellForSneak.positionInGrid.y);
+										  std::abs(randomCell->positionInGrid.y - nextCellForSneak.positionInGrid.y) +
+										  TIME_OF_DISAPPEARANCE_OF_APPLE;
 				SetAppleDuration(apple, durationApple);
 			}
 		}
+	}
+
+	void StopAppleEffects(GameStatePlayingData& data, AppleEffect effect)
+	{
+		data.effect = (AppleEffect)(static_cast<std::uint8_t>(data.effect) & ~static_cast<std::uint8_t>(effect));
 	}
 
 	void UpdateGameStatePlaying(GameStatePlayingData& data, Game& game, float deltaTime)
@@ -267,10 +279,16 @@ namespace SnakeGame
 		}
 		data.timeBetweenLoop = 0;
 		
+		// calculate time of live of unusual apple
 		for (auto& apple : data.unusualApples)
 		{
 			if (GetAppleDuration(*apple) > 0)
 			{
+				if (GetAppleDuration(*apple) < TIME_OF_DISAPPEARANCE_OF_APPLE)
+				{
+					const int degreeTransparency = static_cast<int>(255 / TIME_OF_DISAPPEARANCE_OF_APPLE);
+					SetTransparencyOfAppleSprite(*apple, degreeTransparency);
+				}
 				SetAppleDuration(*apple, GetAppleDuration(*apple) - 1);
 			}
 			if (!apple->isEaten && GetAppleDuration(*apple) < 1)
@@ -281,14 +299,32 @@ namespace SnakeGame
 			}
 		}
 
+		if (data.durationBoostEffect > 0)
+		{
+			--data.durationBoostEffect;
+		}
+		else if (data.durationBoostEffect <= 0)
+		{
+			StopAppleEffects(data, AppleEffect::BoostSpeed);
+			InitDifficultyGame(data, game);
+		}
+
+		if (data.durationInvertedEffect > 0)
+		{
+			--data.durationInvertedEffect;
+		}
+		else if (data.durationInvertedEffect <= 0) 
+		{
+			StopAppleEffects(data, AppleEffect::InvertedMoved);
+		}
+
+
 		SetSnakeHeadDirection(data.snake, data.newDirection);
 
 		//calculate the next cell
 		PositionInGrid currectPositionInGrid = GetSnakeHeadPositionInGrid(data.snake);
 		GridCell* currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
-
 		CalculateNextCellDependingOnDirection(data, currectPositionInGrid);
-
 		currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
 		for (auto& apple : data.unusualApples)
@@ -318,23 +354,26 @@ namespace SnakeGame
 			case SnakeGame::GameItemType::BigApple:
 			{
 				data.numEatenApples += data.pointPerApple * 2;
-				data.bigApple.isEaten = true;
+				MarkAppleAsEaten(data.bigApple);
 				break;
 			}
 			case SnakeGame::GameItemType::BoostApple:
 			{
 				data.numEatenApples += data.pointPerApple;
-				data.boostApple.isEaten = true;
+				MarkAppleAsEaten(data.boostApple);
+				data.snakeSpeed *= BOOST_SPEED_EFFECT;
 				data.effect = (AppleEffect)(static_cast<std::uint8_t>(data.effect) | 
 							  static_cast<std::uint8_t>(AppleEffect::BoostSpeed));
+				data.durationBoostEffect = DURATION_OF_APPLE_EFFECT;
 				break;
 			}
 			case SnakeGame::GameItemType::InvertedApple:
 			{
 				data.numEatenApples += data.pointPerApple;
-				data.invertedApple.isEaten = true;
+				MarkAppleAsEaten(data.invertedApple);
 				data.effect = (AppleEffect)(static_cast<std::uint8_t>(data.effect) | 
 							  static_cast<std::uint8_t>(AppleEffect::InvertedMoved));
+				data.durationInvertedEffect = DURATION_OF_APPLE_EFFECT;
 				break;
 			}
 			case SnakeGame::GameItemType::Snake:
@@ -368,20 +407,17 @@ namespace SnakeGame
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, Game& game, sf::RenderWindow& window)
 	{
-		DrawSnake(data.snake, window);
-		DrawApple(data.apple, window);
-		DrawUI(data.ui, window);
 		for (auto& fence : data.fence)
 		{
 			DrawFence(*fence, window);
 		}
+		DrawUI(data.ui, window);
 
+		DrawSnake(data.snake, window);
+		DrawApple(data.apple, window);
 		for (auto& apple : data.unusualApples)
 		{
-			if (!apple->isEaten)
-			{
-				DrawApple(*apple, window);
-			}
+			DrawApple(*apple, window);
 		}
 	}
 }

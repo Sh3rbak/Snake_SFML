@@ -40,6 +40,8 @@ namespace SnakeGame
 		float snakeSpeed = 0;
 		SnakeDirection newDirection = SnakeDirection::Left;
 		AppleEffect effect = AppleEffect::Empty;
+		int durationBoostEffect = 0;
+		int durationInvertedEffect = 0;
 
 		bool isGameFinished = false;
 
@@ -62,6 +64,7 @@ namespace SnakeGame
 	void UpdateCellsTypeWhenSnakeMoves(GameStatePlayingData& data, GridCell& newCell, PositionInGrid newPositionInGrid);
 	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake);
 	void CalculateAppearanceOfUnusualApple(Apple& apple, GameGrid& gameGrid, GridCell& nextCellForSneak);
+	void StopAppleEffects(GameStatePlayingData& data, AppleEffect effect);
 
-	void SetDifficultyGame(GameStatePlayingData& data, Game& game);
+	void InitDifficultyGame(GameStatePlayingData& data, Game& game);
 }

@@ -20,10 +20,12 @@ namespace SnakeGame
 		sf::Sprite sprite;
 		KindOfApple kind = KindOfApple::UsualApple;
 		int duration = 0;
-		bool isEaten = true;
+		bool isEaten = false;
 	};
 
+	void InitColorForSpriteOfUnusualApple(Apple& apple);
 	void InitApple(Apple& apple, const sf::Texture& texture, KindOfApple kindOfApple = KindOfApple::UsualApple);
+	void SetTransparencyOfAppleSprite(Apple& apple, const int degreeTransparency);
 	void ResetAppleState(Apple& apple);
 	void SetApplePosition(Apple& apple, const Position position, const PositionInGrid positionInGrid);
 	void SetAppleDuration(Apple& apple, const int duration);

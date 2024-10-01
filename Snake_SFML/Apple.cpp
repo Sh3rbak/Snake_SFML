@@ -2,38 +2,47 @@
 
 namespace SnakeGame
 {
+	void InitColorForSpriteOfUnusualApple(Apple& apple)
+	{
+		switch (apple.kind)
+		{
+		case SnakeGame::KindOfApple::BigApple:
+			apple.sprite.setColor(sf::Color::Yellow);
+			break;
+		case SnakeGame::KindOfApple::BoostApple:
+			apple.sprite.setColor(sf::Color(255, 100, 200));
+			break;
+		case SnakeGame::KindOfApple::InvertedApple:
+			apple.sprite.setColor(sf::Color::Cyan);
+			break;
+		}
+	}
+
 	void InitApple(Apple& apple, const sf::Texture& texture, KindOfApple kindOfApple)
 	{
 		apple.sprite.setTexture(texture);
 		apple.sprite.setOrigin(GetItemOrigin(apple.sprite, { 0.5f, 0.5f }));
-		switch (kindOfApple)
+		apple.kind = kindOfApple;
+		if (apple.kind == KindOfApple::BigApple)
 		{
-		case SnakeGame::KindOfApple::UsualApple:
-			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE, APPLE_SIZE }));
-			apple.kind = KindOfApple::UsualApple;
-			apple.isEaten = false;
-			break;
-		case SnakeGame::KindOfApple::BigApple:
-			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE * 1.3f, APPLE_SIZE * 1.3f}));
-			apple.sprite.setColor(sf::Color::Yellow);
-			apple.kind = KindOfApple::BigApple;
-			break;
-		case SnakeGame::KindOfApple::BoostApple:
-			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE, APPLE_SIZE }));
-			apple.sprite.setColor(sf::Color( 255, 100, 200));
-			apple.kind = KindOfApple::BoostApple;
-			break;
-		case SnakeGame::KindOfApple::InvertedApple:
-			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE, APPLE_SIZE }));
-			apple.sprite.setColor(sf::Color::Cyan);
-			apple.kind = KindOfApple::InvertedApple;
-			break;
+			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE * 1.3f, APPLE_SIZE * 1.3f }));
 		}
+		else
+		{
+			apple.sprite.setScale(GetSpriteScale(apple.sprite, { APPLE_SIZE, APPLE_SIZE }));
+		}
+		InitColorForSpriteOfUnusualApple(apple);
+	}
+
+	void SetTransparencyOfAppleSprite(Apple& apple, const int degreeTransparency)
+	{
+		apple.sprite.setColor(apple.sprite.getColor() - (sf::Color)(0, 0, 0, degreeTransparency));
 	}
 
 	void ResetAppleState(Apple& apple)
 	{
 		apple.isEaten = false;
+		InitColorForSpriteOfUnusualApple(apple);
 	}
 
 	void SetApplePosition(Apple& apple, const Position position, const PositionInGrid positionInGrid)
@@ -86,7 +95,7 @@ namespace SnakeGame
 			}
 			break;
 		case SnakeGame::KindOfApple::InvertedApple:
-			if (chanceOfappearance > 900)
+			if (chanceOfappearance > 995)
 			{
 				return true;
 			}
