@@ -5,30 +5,13 @@
 
 namespace SnakeGame
 {
-	enum class KindOfApple
-	{
-		UsualApple,
-		BigApple,
-		BoostApple,
-		InvertedApple
-	};
-
 	struct Apple
 	{
-		PositionInGrid positionInGrid;
 		Position position;
 		sf::Sprite sprite;
-		KindOfApple kind = KindOfApple::UsualApple;
-		int duration = 0;
-		bool isEaten = true;
 	};
 
-	void InitApple(Apple& apple, const sf::Texture& texture, KindOfApple kindOfApple = KindOfApple::UsualApple);
-	void ResetAppleState(Apple& apple);
-	void SetApplePosition(Apple& apple, const Position position, const PositionInGrid positionInGrid);
-	void SetAppleDuration(Apple& apple, const int duration);
-	int GetAppleDuration(Apple& apple);
-	void MarkAppleAsEaten(Apple& apple);
+	void InitApple(Apple& apple, const sf::Texture& texture);
+	void SetApplePosition(Apple& apple, const Position position);
 	void DrawApple(Apple& apple, sf::RenderWindow& window);
-	bool IsChanceAppearanceOfUnusualApple(const Apple& apple);
 }

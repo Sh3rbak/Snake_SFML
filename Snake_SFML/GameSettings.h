@@ -23,8 +23,6 @@ namespace SnakeGame
 	const float HORIZONTAL_SPACE_FOR_GAME_FIELD = (SCREEN_WIDHT % GRID_CELLS_HORIZONTAL) / 2.f;
 	const float VERTICAL_SPACE_FOR_GAME_FIELD = ((SCREEN_HEIGHT - FIELD_ON_TOP_SCREEN) % GRID_CELLS_VERTICAL) / 2.f;
 
-	const int TIME_OF_DISAPPEARANCE_OF_APPLE = 5; // in step
-
 	const float SNAKE_SPEED_BEGINNER = 0.6f; //in seconds
 	const float SNAKE_SPEED_EASY = 0.4f;
 	const float SNAKE_SPEED_NORMAL = 0.25f;
