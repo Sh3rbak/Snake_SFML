@@ -39,7 +39,8 @@ namespace SnakeGame
 
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B)
+			if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::B ||
+				event.key.code == sf::Keyboard::P)
 			{
 				PopGameState(game);
 				PlayGameSounds(game.sound, static_cast<uint8_t>(game.options), SoundOption::Enter);

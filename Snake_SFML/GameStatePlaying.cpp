@@ -279,6 +279,8 @@ namespace SnakeGame
 		}
 		data.timeBetweenLoop = 0;
 		
+		SetSnakeHeadDirection(data.snake, data.newDirection);
+
 		// calculate time of live of unusual apple
 		for (auto& apple : data.unusualApples)
 		{
@@ -318,14 +320,10 @@ namespace SnakeGame
 			StopAppleEffects(data, AppleEffect::InvertedMoved);
 		}
 
-
-		SetSnakeHeadDirection(data.snake, data.newDirection);
-
 		//calculate the next cell
 		PositionInGrid currectPositionInGrid = GetSnakeHeadPositionInGrid(data.snake);
-		GridCell* currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 		CalculateNextCellDependingOnDirection(data, currectPositionInGrid);
-		currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
+		GridCell* currectCell = &data.gameGrid.cells[currectPositionInGrid.x][currectPositionInGrid.y];
 
 		for (auto& apple : data.unusualApples)
 		{

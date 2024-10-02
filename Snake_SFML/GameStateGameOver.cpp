@@ -135,7 +135,6 @@ namespace SnakeGame
 		data.recordsTableText.setString("Records:");
 		for (int i = 0; i < game.recordsTable.size() && i < RECORDS_TABLE_SIZE_IN_GAME_OVER; ++i)
 		{
-
 			std::string name = recordTable[i].first;
 			std::string score = std::to_string(recordTable[i].second);
 			data.recordsTableText.setString(data.recordsTableText.getString() + "\n" + name + ":  " + score);

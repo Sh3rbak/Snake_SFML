@@ -9,11 +9,7 @@ namespace SnakeGame
 
 	bool IsAnythingInCell(const GridCell& cell)
 	{
-		if (cell.type != GameItemType::None)
-		{
-			return true;
-		}
-		return false;
+		return cell.type != GameItemType::None;
 	}
 
 	void InitGameGrid(GameGrid& gameGrid)

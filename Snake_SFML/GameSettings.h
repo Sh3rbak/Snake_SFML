@@ -23,9 +23,12 @@ namespace SnakeGame
 	const float HORIZONTAL_SPACE_FOR_GAME_FIELD = (SCREEN_WIDHT % GRID_CELLS_HORIZONTAL) / 2.f;
 	const float VERTICAL_SPACE_FOR_GAME_FIELD = ((SCREEN_HEIGHT - FIELD_ON_TOP_SCREEN) % GRID_CELLS_VERTICAL) / 2.f;
 
+	const int CHANCE_OF_BIG_APPLE = 10; // 1 = 0,1%
+	const int CHANCE_OF_BOOST_APPLE = 5;
+	const int CHANCE_OF_INVERTED_APPLE = 5;
+
 	const int TIME_OF_DISAPPEARANCE_OF_APPLE = 10; // in step
 	const int DURATION_OF_APPLE_EFFECT = 20;
-
 	const float BOOST_SPEED_EFFECT = 0.5f; // coef decrease time of snake step
 
 	const float SNAKE_SPEED_BEGINNER = 0.6f; //in seconds, time of snake step

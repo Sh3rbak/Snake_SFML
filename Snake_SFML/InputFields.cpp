@@ -52,7 +52,8 @@ namespace SnakeGame
     {
         sf::Vector2f viewSize = (sf::Vector2f)window.getSize();
 
-        float posFirstFieldX = positionMindleField.x - ((static_cast<float>(INPUT_FIELD_WIDHT + SPACING_BETWEEN_INPUT_FIELDS) * fields.fields.size()) - SPACING_BETWEEN_INPUT_FIELDS) / 2.f;
+        float posFirstFieldX = positionMindleField.x - ((static_cast<float>(INPUT_FIELD_WIDHT + SPACING_BETWEEN_INPUT_FIELDS) * 
+                               fields.fields.size()) - SPACING_BETWEEN_INPUT_FIELDS) / 2.f;
 
         for (auto& it : fields.fields)
         {

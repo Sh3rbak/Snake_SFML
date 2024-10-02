@@ -83,19 +83,19 @@ namespace SnakeGame
 		switch (apple.kind)
 		{
 		case SnakeGame::KindOfApple::BigApple:
-			if (chanceOfappearance < 10)
+			if (chanceOfappearance < CHANCE_OF_BIG_APPLE)
 			{
 				return true;
 			}
 			break;
 		case SnakeGame::KindOfApple::BoostApple:
-			if (chanceOfappearance > 500 && chanceOfappearance < 505)
+			if (chanceOfappearance > 500 && chanceOfappearance < 500 + CHANCE_OF_BOOST_APPLE)
 			{
 				return true;
 			}
 			break;
 		case SnakeGame::KindOfApple::InvertedApple:
-			if (chanceOfappearance > 995)
+			if (chanceOfappearance > 1000 - CHANCE_OF_INVERTED_APPLE)
 			{
 				return true;
 			}
