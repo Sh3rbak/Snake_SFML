@@ -4,7 +4,7 @@ namespace SnakeGame
 {
 	void InitSnakeHead(Snake& snake, const sf::Texture& textureOfHead)
 	{
-		if(snake.body.size() > 0)
+		if(!snake.body.empty())
 		{
 			return;
 		}
@@ -23,7 +23,7 @@ namespace SnakeGame
 
 	void PushPartOfBody(Snake& snake, const sf::Texture& textureOfBody)
 	{
-		if (snake.body.size() < 1)
+		if (snake.body.empty())
 		{
 			return;
 		}
@@ -72,17 +72,17 @@ namespace SnakeGame
 		snake.body.front()->positionInGrid = positionInGrid;
 	}
 
-	PositionInGrid GetSnakeHeadPositionInGrid(Snake& snake)
+	PositionInGrid GetSnakeHeadPositionInGrid(const Snake& snake)
 	{
 		return snake.body.front()->positionInGrid;
 	}
 
-	SnakeDirection GetSnakeHeadDirection(Snake& snake)
+	SnakeDirection GetSnakeHeadDirection(const Snake& snake)
 	{
 		return snake.body.front()->direction;
 	}
 
-	std::vector<PositionInGrid> GetPositionSnake(Snake& snake)
+	std::vector<PositionInGrid> GetPositionSnake(const Snake& snake)
 	{
 		std::vector<PositionInGrid> snakeInGrid;
 		for (auto& it : snake.body)

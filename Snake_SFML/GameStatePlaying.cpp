@@ -115,13 +115,13 @@ namespace SnakeGame
 		SetSnakeHeadPosition(data.snake, centerGrid->position, { positionCenterGrid.x, positionCenterGrid.y });
 		ChangeTypeCell(*centerGrid, GameItemType::Snake);
 
-		GridCell* randomCell = GetRandomCell(data.gameGrid);
-		while (IsAnythingInCell(*randomCell))
+		GridCell& randomCell = GetRandomCell(data.gameGrid);
+		while (IsAnythingInCell(randomCell))
 		{
 			randomCell = GetRandomCell(data.gameGrid);
 		}
-		SetApplePosition(data.apple, randomCell->position, randomCell->positionInGrid);
-		ChangeTypeCell(*randomCell, GameItemType::Apple);
+		SetApplePosition(data.apple, randomCell.position, randomCell.positionInGrid);
+		ChangeTypeCell(randomCell, GameItemType::Apple);
 
 		PlayGameMusic(game.sound, static_cast<uint8_t>(game.options));
 	}
@@ -159,7 +159,7 @@ namespace SnakeGame
 
 	void SetNewDirection(GameStatePlayingData& data)
 	{
-		bool isEffect = static_cast<std::uint8_t>(data.effect) & static_cast<std::uint8_t>(AppleEffect::InvertedMoved);
+		const bool isEffect = static_cast<std::uint8_t>(data.effect) & static_cast<std::uint8_t>(AppleEffect::InvertedMoved);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
 			data.newDirection = !isEffect ? SnakeDirection::Up : SnakeDirection::Down;

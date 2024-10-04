@@ -29,7 +29,7 @@ namespace SnakeGame
 	void ResetAppleState(Apple& apple);
 	void SetApplePosition(Apple& apple, const Position position, const PositionInGrid positionInGrid);
 	void SetAppleDuration(Apple& apple, const int duration);
-	int GetAppleDuration(Apple& apple);
+	int GetAppleDuration(const Apple& apple);
 	void MarkAppleAsEaten(Apple& apple);
 	void DrawApple(Apple& apple, sf::RenderWindow& window);
 	bool IsChanceAppearanceOfUnusualApple(const Apple& apple);

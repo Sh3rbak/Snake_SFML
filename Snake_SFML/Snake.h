@@ -34,8 +34,8 @@ namespace SnakeGame
 	void UpdateSnakeBody(Snake& snake);
 	void SetSnakeHeadDirection(Snake& snake, const SnakeDirection direction);
 	void SetSnakeHeadPosition(Snake& snake, const Position position, const PositionInGrid positionInGrid);
-	PositionInGrid GetSnakeHeadPositionInGrid(Snake& snake);
-	SnakeDirection GetSnakeHeadDirection(Snake& snake);
-	std::vector<PositionInGrid> GetPositionSnake(Snake& snake);
+	PositionInGrid GetSnakeHeadPositionInGrid(const Snake& snake);
+	SnakeDirection GetSnakeHeadDirection(const Snake& snake);
+	std::vector<PositionInGrid> GetPositionSnake(const Snake& snake);
 	void DrawSnake(Snake& snake, sf::RenderWindow& window);
 }

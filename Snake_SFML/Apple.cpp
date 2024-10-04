@@ -56,7 +56,7 @@ namespace SnakeGame
 		apple.duration = duration;
 	}
 
-	int GetAppleDuration(Apple& apple)
+	int GetAppleDuration(const Apple& apple)
 	{
 		return apple.duration;
 	}

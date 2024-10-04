@@ -62,7 +62,6 @@ namespace SnakeGame
 	void SetNewDirection(GameStatePlayingData& data);
 	void CalculateNextCellDependingOnDirection(GameStatePlayingData& data, PositionInGrid& positionInGrid);
 	void UpdateCellsTypeWhenSnakeMoves(GameStatePlayingData& data, GridCell& newCell, PositionInGrid newPositionInGrid);
-	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake);
 	void CalculateAppearanceOfUnusualApple(Apple& apple, GameGrid& gameGrid, GridCell& nextCellForSneak);
 	void StopAppleEffects(GameStatePlayingData& data, AppleEffect effect);
 

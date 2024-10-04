@@ -38,11 +38,11 @@ namespace SnakeGame
 		gameGrid.cells.clear();
 	}
 
-	GridCell* GetRandomCell(GameGrid& gameGrid)
+	GridCell& GetRandomCell(GameGrid& gameGrid)
 	{
 		const int randomCellX = rand() % GRID_CELLS_HORIZONTAL;
 		const int randomCellY = rand() % GRID_CELLS_VERTICAL;
-		return &gameGrid.cells[randomCellX][randomCellY];
+		return gameGrid.cells[randomCellX][randomCellY];
 	}
 
 	GridCell* FindEmptyCell(GameGrid& gameGrid, const GridCell& nextCell)
@@ -59,7 +59,7 @@ namespace SnakeGame
 			}
 		}
 
-		if (positions.size() < 1)
+		if (positions.empty())
 		{
 			return nullptr;
 		}
@@ -70,7 +70,7 @@ namespace SnakeGame
 
 	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake)
 	{
-		auto randomCell = GetRandomCell(grid);
+		auto randomCell = &GetRandomCell(grid);
 		int tryingFind = 0;
 		// find free cells
 		while (IsAnythingInCell(*randomCell))
@@ -80,7 +80,7 @@ namespace SnakeGame
 				randomCell = FindEmptyCell(grid, nextCellForSnake);
 				break;
 			}
-			randomCell = GetRandomCell(grid);
+			randomCell = &GetRandomCell(grid);
 			++tryingFind;
 		}
 

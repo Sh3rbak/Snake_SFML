@@ -35,7 +35,7 @@ namespace SnakeGame
 
 	void InitGameGrid(GameGrid& gameGrid);
 	void ClearGameGrid(GameGrid& gameGrid);
-	GridCell* GetRandomCell(GameGrid& gameGrid);
+	GridCell& GetRandomCell(GameGrid& gameGrid);
 	GridCell* FindEmptyCell(GameGrid& gameGrid, const GridCell& nextCell);
 	bool FindRandomFreeCell(GameGrid& grid, GridCell*& expactedFreeCell, GridCell& nextCellForSnake);
 }
